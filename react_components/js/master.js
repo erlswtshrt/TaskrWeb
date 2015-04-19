@@ -137,7 +137,7 @@ var nodeCoordinates = [	{"x":100,	"y":100},
 function drawGraph() {
 	for (var i = 0; i < 4; i++) {
 		var x = i * 100;
-		nodes.push(React.DOM.circle({fill: "purple", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
+		nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
 		for (var j = 0; j < 4; j++) {
 			console.log(edgeWeights[i][j]);
 			if (edgeWeights[i][j] != 0) {
@@ -158,11 +158,11 @@ function drawGraph() {
 								y1: y1, 
 								x2: x2, 
 								y2: y2, 
-								stroke: "purple", 
+								stroke: "#344A5F", 
 								strokeWidth: "3"}));
 
 				weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
-										React.DOM.rect({width: "60", height: "30", rx: "8", ry: "8", x: "0", y: "0"}), 
+										React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
 										React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
 													fontSize: "12", 
 													fill: "#ffffff"}, 
