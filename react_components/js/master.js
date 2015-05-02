@@ -10,10 +10,10 @@ var M = N * N;
 var currencyCode = ["USD", "EUR", "AED", "JPY", "HKD", "CHF", "AUD", "GBP", "MXN", "SGD"];
 var openExchangeData = [];
 
-var USD = [1,		0.82, 	0, 		0, 	0, 0, 0, 0, 0];
-var EUR = [0, 		1, 		129.7, 	0, 	0, 0, 0, 0, 0];
-var JPY = [0, 		0, 		1, 		12, 0, 0, 0, 0, 0];
-var TRY = [0.0008, 	0, 		0, 		1, 	0, 0, 0, 0, 0];
+var USD = [1, .9, 0, 0, 0, 0, 0, 0, 0];
+var EUR = [.8, 1, 0, 0, 0, 0, 0, 0, 0];
+var JPY = [.6, 0, 1, 0, 0, 0, 0, 0, 0];
+var TRY = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 var a 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
 var b 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
 var c 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -162,88 +162,141 @@ function populateNodeCoordinates() {
 	}
 }
 
-function drawGraph() {
-	for (var i = 0; i < N-1; i++) {
-		var x = i * 100;
-		nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
-		for (var j = 0; j < N-1; j++) {
-			console.log(edgeWeights[i][j]);
-			if (edgeWeights[i][j] != 0) {
+var SVGComponent = React.createClass({displayName: 'SVGComponent',
+	getInitialState: function() {
+		populateWeightedMatrix();
+		negativeCycle();
+		populateNodeCoordinates();
 
-				var x1 = nodeCoordinates[i].x;
-				var x2 = nodeCoordinates[j].x;
-				var y1 = nodeCoordinates[i].y;
-				var y2 = nodeCoordinates[j].y;
+		var nodes = [];
+		var edges = [];
+		var weightLabels = [];
 
-				var height = Math.abs(y2-y1);
-				var width = Math.abs(x2-x1);
-				weightX = Math.min(x1, x2) + width/2 - 30;
-				weightY = Math.min(y1, y2) + height/2 - 15;
+		for (var i = 0; i < N-1; i++) {
+			var x = i * 100;
+			nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
+			for (var j = 0; j < N-1; j++) {
+				console.log(edgeWeights[i][j]);
+				if (edgeWeights[i][j] != 0) {
+
+					var x1 = nodeCoordinates[i].x;
+					var x2 = nodeCoordinates[j].x;
+					var y1 = nodeCoordinates[i].y;
+					var y2 = nodeCoordinates[j].y;
+
+					var height = Math.abs(y2-y1);
+					var width = Math.abs(x2-x1);
+					weightX = Math.min(x1, x2) + width/2 - 30;
+					weightY = Math.min(y1, y2) + height/2 - 15;
 
 
 
-				edges.push(	React.DOM.line({x1: x1, 
-								y1: y1, 
-								x2: x2, 
-								y2: y2, 
-								stroke: "#344A5F", 
-								strokeWidth: "3"}));
+					edges.push(	React.DOM.line({x1: x1, 
+									y1: y1, 
+									x2: x2, 
+									y2: y2, 
+									stroke: "#344A5F", 
+									strokeWidth: "3"}));
 
-				weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
-										React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
-										React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
-													fontSize: "12", 
-													fill: "#ffffff"}, 
-												edgeWeights[i][j]
-										)
-									));
+					weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
+											React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
+											React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
+														fontSize: "12", 
+														fill: "#ffffff"}, 
+													edgeWeights[i][j]
+											)
+										));
+				}
 			}
 		}
-	}
-}
+		return {nodes: nodes, edges: edges, weightLabels: weightLabels};
+	},
+	componentDidMount: function() {
+		return $.ajax({
+			url: 'https://openexchangerates.org/api/latest.json?app_id=d3ee65deb8834a1f9d35e3481df50263&base=' + currencyCode[0], 
+			dataType: 'json', 
+			success: function(json) { 
+				openExchangeData[0] = json; 
+				console.log(json);
+				console.log("ll" + openExchangeData[0]); 
 
-var SVGComponent = React.createClass({displayName: 'SVGComponent',
+
+
+				USD = [1,		0.82, 	0, 		0, 	0, 0, 0, 0, 0];
+				EUR = [0, 		1, 		129.7, 	0, 	0, 0, 0, 0, 0];
+				JPY = [0, 		0, 		1, 		12, 0, 0, 0, 0, 0];
+				TRY = [0.0008, 	0, 		0, 		1, 	0, 0, 0, 0, 0];
+				a 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+				b 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+				c 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+				d 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+				e 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+				exchangeRates = [USD, EUR, JPY, TRY, a, b, c, d, e];
+
+				populateWeightedMatrix();
+				negativeCycle();
+				populateNodeCoordinates();
+
+				var nodes = [];
+				var edges = [];
+				var weightLabels = [];
+
+				for (var i = 0; i < N-1; i++) {
+					var x = i * 100;
+					nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
+					for (var j = 0; j < N-1; j++) {
+						console.log(edgeWeights[i][j]);
+						if (edgeWeights[i][j] != 0) {
+
+							var x1 = nodeCoordinates[i].x;
+							var x2 = nodeCoordinates[j].x;
+							var y1 = nodeCoordinates[i].y;
+							var y2 = nodeCoordinates[j].y;
+
+							var height = Math.abs(y2-y1);
+							var width = Math.abs(x2-x1);
+							weightX = Math.min(x1, x2) + width/2 - 30;
+							weightY = Math.min(y1, y2) + height/2 - 15;
+
+
+
+							edges.push(	React.DOM.line({x1: x1, 
+											y1: y1, 
+											x2: x2, 
+											y2: y2, 
+											stroke: "#344A5F", 
+											strokeWidth: "3"}));
+
+							weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
+													React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
+													React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
+																fontSize: "12", 
+																fill: "#ffffff"}, 
+															edgeWeights[i][j]
+													)
+												));
+						}
+					}
+				}
+				console.log("hhhhhhhhhhhhhhgets here");
+				this.setState({nodes: nodes, edges: edges, weightLabels: weightLabels});
+
+
+
+
+
+			}.bind(this), 
+		}); 
+		
+	},
     render: function() {
-        return React.DOM.svg({height: "1000", width: this.props.width}, edges, nodes, weightLabels);
+        return React.DOM.svg({height: "1000", width: this.props.width}, this.state.edges, this.state.nodes, this.state.weightLabels);
     }
 });
 
 var MasterContainer = React.createClass({displayName: 'MasterContainer',
-
-	getInitialState: function() {
-		return {data: []};
-	},
-	componentDidMount: function() {
-		var i = 0;
-
-		var requests = [];
-
-		for (var i = 0; i < N; i++) {
-			requests[i] = function () { 
-				return $.ajax({
-					url: 'https://openexchangerates.org/api/latest.json?app_id=d3ee65deb8834a1f9d35e3481df50263&base=' + currencyCode[i], 
-					dataType: 'json', 
-					success: function(json) { 
-						openExchangeData[i] = json; 
-						console.log(json);
-						console.log("ll" + openExchangeData[i]); 
-					}.bind(this), 
-				}); 
-			};
-		}
-
-		for (var i = 0; i < N; i++) {
-			console.log("helloooo: " + requests[i]());
-		}
-
-		$.when(requests[0]).done( function() { console.log("kljlj: " + openExchangeData[0])});
-		
-	},
 	render: function() {
-		populateWeightedMatrix();
-		negativeCycle();
-		populateNodeCoordinates();
-		drawGraph();
 		console.log(example);
 		return (SVGComponent({width: "800"}));
 	}
