@@ -20441,24 +20441,47 @@ var React = require('react/addons');
 var Header = require('./header/Header.js');
 
 var inf = Number.POSITIVE_INFINITY;
-var N = 5;
+var N = 10;
 var M = N * N;
 
-var USD = [1,		0.82, 	0, 		0];
-var EUR = [0, 		1, 		129.7, 	0];
-var JPY = [0, 		0, 		1, 		12];
-var TRY = [0.0008, 	0, 		0, 		1];
+var currencyCode = ["USD", "EUR", "AED", "JPY", "HKD", "CHF", "AUD", "GBP", "MXN", "SGD"];
+var openExchangeData = [];
 
-var order = "hello";
+var USD = [1,		0.82, 	0, 		0, 	0, 0, 0, 0, 0];
+var EUR = [0, 		1, 		129.7, 	0, 	0, 0, 0, 0, 0];
+var JPY = [0, 		0, 		1, 		12, 0, 0, 0, 0, 0];
+var TRY = [0.0008, 	0, 		0, 		1, 	0, 0, 0, 0, 0];
+var a 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var b 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var c 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var d 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var e 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var exchangeRates = [USD, EUR, JPY, TRY];
+var exchangeRates = [USD, EUR, JPY, TRY, a, b, c, d, e];
 var weightedMatrix = [];
 
 var nodes = [];
 var edges = [];
 var weightLabels = [];
+var example;
+var data;
+
+// Use jQuery.ajax to get the latest exchange rates, 
+
+var getExchangeRates = function() {
+	System.out.println(":::: ---> " + openExchangeData[0])
+	for (var i = 0; i < N; i++) {
+		for (var j = 0; j < N; j++) {
+			var temp = currencyCode[j];
+			exchangeRates[i][j] = openExchangeData[i].rates.obj['temp'];
+			System.out.println(":::: ---> " + exchangeRates[i][j])
+		}
+	}
+}
 
 var populateWeightedMatrix = function() {
+
+
 	// init empty matrix
 	for(var i=0; i<N; i++) {
 	    weightedMatrix[i] = [];
@@ -20555,8 +20578,6 @@ var negativeCycle = function() {
                 			var weight = exchangeRates[i][j];
                 			console.log("i: " + i + ", j: " + j + ", " + weight);
                 			edgeWeights[i][j] = weight;
-
-                			//order = order + exchangeRates[currentIndex][negCycleStack[negCycleStack.length-1]] + ", ";
                 		}
                 	}
                 }
@@ -20566,16 +20587,23 @@ var negativeCycle = function() {
 	return false;
 }
 
-var nodeCoordinates = [	{"x":100,	"y":100}, 
-						{"x":250, 	"y":100}, 
-						{"x":250,  	"y":250},
-						{"x":100,  	"y":250} ];
+var nodeCoordinates = [];
+
+function populateNodeCoordinates() {
+	var rowLength = Math.sqrt(N-1);
+	for (var i = 0; i < rowLength; i++) {
+		for (var j = 0; j < rowLength; j++) {
+			var node = {"x":150*i+100, "y":150*j+100};
+			nodeCoordinates.push(node);
+		}
+	}
+}
 
 function drawGraph() {
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < N-1; i++) {
 		var x = i * 100;
 		nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
-		for (var j = 0; j < 4; j++) {
+		for (var j = 0; j < N-1; j++) {
 			console.log(edgeWeights[i][j]);
 			if (edgeWeights[i][j] != 0) {
 
@@ -20618,13 +20646,42 @@ var SVGComponent = React.createClass({displayName: 'SVGComponent',
 });
 
 var MasterContainer = React.createClass({displayName: 'MasterContainer',
+
+	getInitialState: function() {
+		return {data: []};
+	},
+	componentDidMount: function() {
+		var i = 0;
+
+		var requests = [];
+
+		for (var i = 0; i < N; i++) {
+			requests[i] = function () { 
+				return $.ajax({
+					url: 'https://openexchangerates.org/api/latest.json?app_id=d3ee65deb8834a1f9d35e3481df50263&base=' + currencyCode[i], 
+					dataType: 'json', 
+					success: function(json) { 
+						openExchangeData[i] = json; 
+						console.log(json);
+						console.log("ll" + openExchangeData[i]); 
+					}.bind(this), 
+				}); 
+			};
+		}
+
+		for (var i = 0; i < N; i++) {
+			console.log("helloooo: " + requests[i]());
+		}
+
+		$.when(requests[0]).done( function() { console.log("kljlj: " + openExchangeData[0])});
+		
+	},
 	render: function() {
 		populateWeightedMatrix();
 		negativeCycle();
+		populateNodeCoordinates();
 		drawGraph();
-
-		var content = 150;
-
+		console.log(example);
 		return (SVGComponent({width: "800"}));
 	}
 });
