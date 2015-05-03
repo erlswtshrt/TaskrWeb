@@ -20447,17 +20447,8 @@ var M = N * N;
 var currencyCode = ["USD", "EUR", "AED", "JPY", "HKD", "CHF", "AUD", "GBP", "MXN", "SGD"];
 var openExchangeData = [];
 
-var USD = [1, .9, 0, 0, 0, 0, 0, 0, 0];
-var EUR = [.8, 1, 0, 0, 0, 0, 0, 0, 0];
-var JPY = [.6, 0, 1, 0, 0, 0, 0, 0, 0];
-var TRY = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var a 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var b 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var c 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var d 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var e 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var exchangeRates = [];
 
-var exchangeRates = [USD, EUR, JPY, TRY, a, b, c, d, e];
 var weightedMatrix = [];
 
 var nodes = [];
@@ -20468,19 +20459,24 @@ var data;
 
 // Use jQuery.ajax to get the latest exchange rates, 
 
-var getExchangeRates = function() {
-	System.out.println(":::: ---> " + openExchangeData[0])
+var populateExchangeRates = function() {
+
+	// init empty matrix
+	for(var i=0; i<N; i++) {
+	    exchangeRates[i] = [];
+	    for(var j=0; j<N; j++) {
+	        exchangeRates[i][j] = 0;
+	    }
+	}
+
 	for (var i = 0; i < N; i++) {
 		for (var j = 0; j < N; j++) {
-			var temp = currencyCode[j];
-			exchangeRates[i][j] = openExchangeData[i].rates.obj['temp'];
-			System.out.println(":::: ---> " + exchangeRates[i][j])
+			exchangeRates[i][j] = openExchangeData[i].rates[currencyCode[j]];
 		}
 	}
 }
 
 var populateWeightedMatrix = function() {
-
 
 	// init empty matrix
 	for(var i=0; i<N; i++) {
@@ -20493,8 +20489,12 @@ var populateWeightedMatrix = function() {
 	// compute negative log of all exchange rates, use as edge weights
 	for(var i = 0; i < N-1; i++) {
 		for(var j = 0; j < N-1; j++) {
-			if(exchangeRates[i][j] == 0) weightedMatrix[i][j] = inf;
-			else weightedMatrix[i][j] = -(Math.log(exchangeRates[i][j]));
+			if(i == j) {
+				weightedMatrix[i][j] = 0;
+			} else {
+				if(exchangeRates[i][j] == 0) weightedMatrix[i][j] = inf;
+				else weightedMatrix[i][j] = -(Math.log(exchangeRates[i][j]));
+			}
 		}
 	}
 
@@ -20552,9 +20552,11 @@ var negativeCycle = function() {
 	
 	var negCycleStack = new Array();
 	
+	var count = 0;
+
 	for (var src = 0; src < N; src++) {
-        for (var dest = 0; dest < N; dest++) {
-            if (weightedMatrix[src][dest] != inf) {
+		for (var dest = 0; dest < N; dest++) {
+			if (weightedMatrix[src][dest] != inf) {
                 if (distance[dest] > distance[src]
                        + weightedMatrix[src][dest]) {
                 	// NEGIATIVE CYCLE DETECTED
@@ -20564,9 +20566,11 @@ var negativeCycle = function() {
                 	negCycleStack.push(current);
                 	
                 	// maintain stack to reverse order of path
-                	while (current != init) {
+                	var cycle = 0;
+                	while (current != init && cycle < 10) {
                 		current = pre[current];
                 		negCycleStack.push(current);
+                		cycle++
                 	}
                 	
                 	// print in correct order
@@ -20575,16 +20579,15 @@ var negativeCycle = function() {
                 		if(negCycleStack.length > 0) {
                 			var i = currentIndex;
                 			var j = negCycleStack[negCycleStack.length-1];
-                			var weight = exchangeRates[i][j];
-                			console.log("i: " + i + ", j: " + j + ", " + weight);
+                			var weight = exchangeRates[i][j]
                 			edgeWeights[i][j] = weight;
                 		}
                 	}
+                	return
                 }
             }
-        }
+    	}
     }
-	return false;
 }
 
 var nodeCoordinates = [];
@@ -20593,139 +20596,105 @@ function populateNodeCoordinates() {
 	var rowLength = Math.sqrt(N-1);
 	for (var i = 0; i < rowLength; i++) {
 		for (var j = 0; j < rowLength; j++) {
-			var node = {"x":150*i+100, "y":150*j+100};
+			var shiftX = (j%2) * 100
+			var node = {"x":200*i+100 + shiftX, "y":100*j+100};
 			nodeCoordinates.push(node);
 		}
 	}
 }
 
+var drawGraph = function() {
+	var nodes = [];
+	var edges = [];
+	var weightLabels = [];
+
+	for (var i = 0; i < N-1; i++) {
+		var x = i * 100;
+		nodes.push(	React.DOM.svg({x: nodeCoordinates[i].x-25, y: nodeCoordinates[i].y-25, width: "50", height: "50"}, 
+						React.DOM.circle({fill: "#1ABCF2", cx: "25", cy: "25", r: "25"}), 
+						React.DOM.text({x: "25", y: "30", textAnchor: "middle", width: "50", height: "50", fontFamily: "Verdana", 
+													fontSize: "12", 
+													fill: "#ffffff"}, 
+												currencyCode[i]
+										)
+					));
+		for (var j = 0; j < N-1; j++) {
+
+			var roundedLabel = edgeWeights[i][j].toFixed(3);
+
+			if (edgeWeights[i][j] != 0) {
+
+				var x1 = nodeCoordinates[i].x;
+				var x2 = nodeCoordinates[j].x;
+				var y1 = nodeCoordinates[i].y;
+				var y2 = nodeCoordinates[j].y;
+
+				var height = Math.abs(y2-y1);
+				var width = Math.abs(x2-x1);
+				weightX = Math.min(x1, x2) + width/2 - 35;
+				weightY = Math.min(y1, y2) + height/2 - 15;
+
+
+
+				edges.push(	React.DOM.line({x1: x1, 
+								y1: y1, 
+								x2: x2, 
+								y2: y2, 
+								stroke: "#1ABCF2", 
+								strokeWidth: "2"}));
+
+				weightLabels.push(	React.DOM.svg({width: "70", height: "30", x: weightX, y: weightY}, 
+										React.DOM.rect({width: "70", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#1ABC9C"}), 
+										React.DOM.text({x: "35", textAnchor: "middle", width: "70", y: "20", fontFamily: "Verdana", 
+													fontSize: "12", 
+													fill: "#ffffff"}, 
+												roundedLabel
+										)
+									));
+			}
+		}
+	}
+	return {nodes: nodes, edges: edges, weightLabels: weightLabels};
+}
+
 var SVGComponent = React.createClass({displayName: 'SVGComponent',
 	getInitialState: function() {
+
+		// init empty matrix
+		for(var i=0; i<N; i++) {
+		    exchangeRates[i] = [];
+		    for(var j=0; j<N; j++) {
+		        exchangeRates[i][j] = 0;
+		    }
+		}
+
 		populateWeightedMatrix();
 		negativeCycle();
 		populateNodeCoordinates();
-
-		var nodes = [];
-		var edges = [];
-		var weightLabels = [];
-
-		for (var i = 0; i < N-1; i++) {
-			var x = i * 100;
-			nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
-			for (var j = 0; j < N-1; j++) {
-				console.log(edgeWeights[i][j]);
-				if (edgeWeights[i][j] != 0) {
-
-					var x1 = nodeCoordinates[i].x;
-					var x2 = nodeCoordinates[j].x;
-					var y1 = nodeCoordinates[i].y;
-					var y2 = nodeCoordinates[j].y;
-
-					var height = Math.abs(y2-y1);
-					var width = Math.abs(x2-x1);
-					weightX = Math.min(x1, x2) + width/2 - 30;
-					weightY = Math.min(y1, y2) + height/2 - 15;
-
-
-
-					edges.push(	React.DOM.line({x1: x1, 
-									y1: y1, 
-									x2: x2, 
-									y2: y2, 
-									stroke: "#344A5F", 
-									strokeWidth: "3"}));
-
-					weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
-											React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
-											React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
-														fontSize: "12", 
-														fill: "#ffffff"}, 
-													edgeWeights[i][j]
-											)
-										));
-				}
-			}
-		}
-		return {nodes: nodes, edges: edges, weightLabels: weightLabels};
+		return drawGraph();
 	},
 	componentDidMount: function() {
-		return $.ajax({
-			url: 'https://openexchangerates.org/api/latest.json?app_id=d3ee65deb8834a1f9d35e3481df50263&base=' + currencyCode[0], 
-			dataType: 'json', 
-			success: function(json) { 
-				openExchangeData[0] = json; 
-				console.log(json);
-				console.log("ll" + openExchangeData[0]); 
-
-
-
-				USD = [1,		0.82, 	0, 		0, 	0, 0, 0, 0, 0];
-				EUR = [0, 		1, 		129.7, 	0, 	0, 0, 0, 0, 0];
-				JPY = [0, 		0, 		1, 		12, 0, 0, 0, 0, 0];
-				TRY = [0.0008, 	0, 		0, 		1, 	0, 0, 0, 0, 0];
-				a 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-				b 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-				c 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-				d 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-				e 	= [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-				exchangeRates = [USD, EUR, JPY, TRY, a, b, c, d, e];
-
-				populateWeightedMatrix();
-				negativeCycle();
-				populateNodeCoordinates();
-
-				var nodes = [];
-				var edges = [];
-				var weightLabels = [];
-
-				for (var i = 0; i < N-1; i++) {
-					var x = i * 100;
-					nodes.push(React.DOM.circle({fill: "#2A94D6", cx: nodeCoordinates[i].x, cy: nodeCoordinates[i].y, r: "15"}));
-					for (var j = 0; j < N-1; j++) {
-						console.log(edgeWeights[i][j]);
-						if (edgeWeights[i][j] != 0) {
-
-							var x1 = nodeCoordinates[i].x;
-							var x2 = nodeCoordinates[j].x;
-							var y1 = nodeCoordinates[i].y;
-							var y2 = nodeCoordinates[j].y;
-
-							var height = Math.abs(y2-y1);
-							var width = Math.abs(x2-x1);
-							weightX = Math.min(x1, x2) + width/2 - 30;
-							weightY = Math.min(y1, y2) + height/2 - 15;
-
-
-
-							edges.push(	React.DOM.line({x1: x1, 
-											y1: y1, 
-											x2: x2, 
-											y2: y2, 
-											stroke: "#344A5F", 
-											strokeWidth: "3"}));
-
-							weightLabels.push(	React.DOM.svg({width: "60", height: "30", x: weightX, y: weightY}, 
-													React.DOM.rect({width: "60", height: "30", rx: "15", ry: "15", x: "0", y: "0", fill: "#717ECD"}), 
-													React.DOM.text({x: "30", textAnchor: "middle", width: "60", y: "20", fontFamily: "Verdana", 
-																fontSize: "12", 
-																fill: "#ffffff"}, 
-															edgeWeights[i][j]
-													)
-												));
-						}
+		var requestNumber = 0;
+		var getExchangeRate = function(context) {
+			$.ajax({
+				url: 'https://openexchangerates.org/api/latest.json?app_id=d3ee65deb8834a1f9d35e3481df50263&base=' + currencyCode[requestNumber], 
+				dataType: 'json', 
+				success: function(json) { 
+					openExchangeData[requestNumber] = json;
+					requestNumber++;
+					if(requestNumber < N) {
+						getExchangeRate(context);
+					} else {
+						populateExchangeRates()
+						populateWeightedMatrix();
+						negativeCycle();
+						populateNodeCoordinates();
+						context.setState(drawGraph())
 					}
-				}
-				console.log("hhhhhhhhhhhhhhgets here");
-				this.setState({nodes: nodes, edges: edges, weightLabels: weightLabels});
-
-
-
-
-
-			}.bind(this), 
-		}); 
-		
+				}.bind(this), 
+			});
+		}
+		getExchangeRate(this);
 	},
     render: function() {
         return React.DOM.svg({height: "1000", width: this.props.width}, this.state.edges, this.state.nodes, this.state.weightLabels);
