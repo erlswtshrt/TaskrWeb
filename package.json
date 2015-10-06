@@ -1,15 +1,21 @@
 {
-  "name": "BuyTrade",
+  "name": "TaskrWeb",
   "main": "app.js",
   "dependencies": {
     "body-parser": "~1.0.1",
-    "bson": "^0.2.11",
     "ejs": "^1.0.0",
     "express": "~4.0.0",
+    "firebase": "^2.2.9",
     "gulp": "^3.8.7",
     "gulp-browserify": "^0.5.0",
+    "gulp-react": "^3.0.1",
+    "gulp-rename": "^1.2.2",
     "gulp-rimraf": "^0.1.0",
-    "mongodb": "^1.4.8",
-    "mongoose": "~3.6.13"
+    "gulp-sass": "^2.0.4",
+    "gulp-sourcemaps": "^1.5.2",
+    "jquery": "^2.1.4",
+    "qrcode.react": "^0.5.0",
+    "react": "^0.13.3",
+    "reactfire": "^0.5.0"
   }
 }

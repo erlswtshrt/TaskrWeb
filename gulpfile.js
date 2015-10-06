@@ -3,9 +3,10 @@ var browserify = require('gulp-browserify');
 var react = require('gulp-react');
 var rename = require('gulp-rename');
 var rimraf = require('gulp-rimraf');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 
 var path = {
-	//internal
 	App: './www'
 };
 
@@ -32,3 +33,12 @@ gulp.task('jsx', function() {
 		}))
 		.pipe(gulp.dest('./react_components/js'))
 });
+
+gulp.task('sass', function() {
+    gulp.src('./www/*.scss')
+        .pipe(sass())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('./www/css/'));
+});
+
+gulp.task('default', ['sass', 'build']);
