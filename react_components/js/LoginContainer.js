@@ -11,7 +11,7 @@ var LoginContainer = React.createClass({displayName: "LoginContainer",
     var password = React.findDOMNode(this.refs.password).value.trim()
     var self = this;
 
-    var ref = new Firebase("https://shophopanalytics.firebaseio.com");
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
     ref.authWithPassword({
       email    : email,
       password : password
@@ -23,13 +23,14 @@ var LoginContainer = React.createClass({displayName: "LoginContainer",
   },
   render: function() {
     return (
-      React.createElement("div", null, 
-        React.createElement("form", null, 
-          React.createElement("input", {type: "text", name: "email", placeholder: "Email", ref: "email"}), 
-          React.createElement("input", {type: "text", name: "password", placeholder: "Password", ref: "password"})
+      React.createElement("div", {className: "flex-col login-bg c"}, 
+        React.createElement("div", {className: "textWhite text2"}, "taskr."), 
+        React.createElement("form", {className: "flex-col mt1"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "email", placeholder: "Email", ref: "email"}), 
+          React.createElement("input", {className: "textInputLarge", type: "password", name: "password", placeholder: "Password", ref: "password"})
         ), 
-        React.createElement("div", {onClick: this.login}, "Log in"), 
-        React.createElement("div", {onClick: this.updateAppState}, "Register")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite", onClick: this.login}, "Log in"), 
+        React.createElement("div", {className: "buttonLarge bgDarkBlue textWhite", onClick: this.updateAppState}, "Register")
       )
     );
   }

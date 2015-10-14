@@ -32,14 +32,14 @@ var RegisterContainer = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <form>
-          <input type="text" name="firstName" placeholder="First Name" ref="firstName" />
-          <input type="text" name="lastName" placeholder="Last Name" ref="lastName" />
-          <input type="text" name="email" placeholder="Email" ref="email" />
-          <input type="text" name="password" placeholder="Password" ref="password" />
+      <div className="flex-col c bgDarkBlue h-full">
+        <form className="flex-col">
+          <input className="textInputLarge" type="text" name="firstName" placeholder="First Name" ref="firstName" />
+          <input className="textInputLarge" type="text" name="lastName" placeholder="Last Name" ref="lastName" />
+          <input className="textInputLarge" type="text" name="email" placeholder="Email" ref="email" />
+          <input className="textInputLarge" type="password" name="password" placeholder="Password" ref="password" />
         </form>
-        <div onClick={this.register}>Register</div>
+        <div className="buttonLarge bgYellow" onClick={this.register}>Register</div>
       </div>
     );
   }

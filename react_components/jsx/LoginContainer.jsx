@@ -11,7 +11,7 @@ var LoginContainer = React.createClass({
     var password = React.findDOMNode(this.refs.password).value.trim()
     var self = this;
 
-    var ref = new Firebase("https://shophopanalytics.firebaseio.com");
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
     ref.authWithPassword({
       email    : email,
       password : password
@@ -23,13 +23,14 @@ var LoginContainer = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <form>
-          <input type="text" name="email" placeholder="Email" ref="email" />
-          <input type="text" name="password" placeholder="Password" ref="password" />
+      <div className="flex-col login-bg c">
+        <div className="textWhite text2">taskr.</div>
+        <form className="flex-col mt1">
+          <input className="textInputLarge" type="text" name="email" placeholder="Email" ref="email" />
+          <input className="textInputLarge" type="password" name="password" placeholder="Password" ref="password" />
         </form>
-        <div onClick={this.login}>Log in</div>
-        <div onClick={this.updateAppState}>Register</div>
+        <div className="buttonLarge bgGreen textWhite" onClick={this.login}>Log in</div>
+        <div className="buttonLarge bgDarkBlue textWhite" onClick={this.updateAppState}>Register</div>
       </div>
     );
   }

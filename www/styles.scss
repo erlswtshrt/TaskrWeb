@@ -1,7 +1,7 @@
 @font-face {
 	font-family: 'Avenir';
-	font-style: normal;
-	font-weight: normal;
+	font-style: light;
+	font-weight: light;
 	src: url('../assets/Fonts/AvenirLTStd-Medium.woff') format('woff');
 }
 
@@ -18,13 +18,30 @@ $yellow: #f7db63;
 $white: #ffffff;
 $navy: #3D4957;
 $darkPurple: #2c2238;
+$grey: #B1B1B1;
 
 body {
   font-family: 'Avenir';
 }
 
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  padding: 0; 
+}
+
 .text-l {
-	font-weight: lighter;
+	font-weight: light;
+}
+
+.textWhite {
+	color: $white;
+}
+
+.textBlue {
+  color: $blue;
 }
 
 .bgBlue {
@@ -61,280 +78,93 @@ body {
     background-color: $navy;
 }
 
-.mSmall {
-	margin: 5;
-}
-.mMedium {
-	margin: 8;
-}
-.mLarge {
-	margin: 10;
-}
-.mXLarge {
-	margin: 15;
-}
-.mXxLarge {
-	margin: 20;
-}
-.mXxxLarge {
-	margin: 30;
+.mt1 {
+  margin-top: 1rem;
 }
 
-.mlSmall {
-	margin-left: 5;
-}
-.mlMedium {
-	margin-left: 8;
-}
-.mlLarge {
-	margin-left: 10;
-}
-.mlXLarge {
-	margin-left: 15;
-}
-.mlXxLarge {
-	margin-left: 20;
-}
-.mlXxxLarge {
-	margin-left: 30;
+.mt2 {
+  margin-top: 2rem;
 }
 
-
-.mrSmall {
-	margin-right: 5;
-}
-.mrMedium {
-	margin-right: 8;
-}
-.mrLarge {
-	margin-right: 10;
-}
-.mrXLarge {
-	margin-right: 15;
-}
-.mrXxLarge {
-	margin-right: 20;
-}
-.mrXxxLarge {
-	margin-right: 30;
+.mt3 {
+  margin-top: 3rem;
 }
 
-.mtSmall {
-	margin-top: 5;
-}
-.mtMedium {
-	margin-top: 8;
-}
-.mtLarge {
-	margin-top: 10;
-}
-.mtXLarge {
-	margin-top: 15;
-}
-.mtXxLarge {
-	margin-top: 20;
-}
-.mtXxxLarge {
-	margin-top: 30;
+.pt3 {
+  padding-top: 3rem;
 }
 
-.mbSmall {
-	margin-bottom: 5;
-}
-.mbMedium {
-	margin-bottom: 8;
-}
-.mbLarge {
-	margin-bottom: 10;
-}
-.mbXLarge {
-	margin-bottom: 15;
-}
-.mbXxLarge {
-	margin-bottom: 20;
-}
-.mbXxxLarge {
-	margin-bottom: 30;
+.ml3 {
+  margin-left: 3rem;
 }
 
- 
-.pSmall {
-	padding: 5;
-}
-.pMedium {
-	padding: 8;
-}
-.pLarge {
-	padding: 10;
-}
-.pXLarge {
-	padding: 15;
-}
-.pXxLarge {
-	padding: 20;
-}
-.pXxxLarge {
-	padding: 30;
+.mr3 {
+  margin-right: 3rem;
 }
 
-.plSmall {
-	padding-left: 5;
-}
-.plMedium {
-	padding-left: 8;
-}
-.plLarge {
-	padding-left: 10;
-}
-.plXLarge {
-	padding-left: 15;
-}
-.plXxLarge {
-	padding-left: 20;
-}
-.plXxxLarge {
-	padding-left: 30;
+.textGrey {
+  color: $grey;
 }
 
-.prSmall {
-	padding-right: 5;
-}
-.prMedium {
-	padding-right: 8;
-}
-.prLarge {
-	padding-right: 10;
-}
-.prXLarge {
-	padding-right: 15;
-}
-.prXxLarge {
-	padding-right: 20;
-}
-.prXxxLarge {
-	padding-right: 30;
+.text1-2 {
+  font-size: 1.2rem;
 }
 
-.brSmall {
-	border-radius: 5;
-}
-.brMedium {
-	border-radius: 8;
-}
-.brLarge {
-	border-radius: 10;
-}
-.brXLarge {
-	border-radius: 15;
-}
-
-
-.textWhite {
-    color: $white;
-}
-.textBlue {
-    color: $blue;
-}
-.textLightBlue {
-    color: $lightBlue;
-}
-.textDarkBlue {
-    color: $darkBlue;
-}
-.textBlueGreen {
-    color: $blueGreen;
-}
-.textGreen {
-    color: $green;
-}
-.textOrange {
-    color: $orange;
-}
-.textMagenta {
-    color: $magenta;
-}
-.textPurple {
-    color: $purple;
-}
-.textRed {
-    color: $red;
-}
-.textYellow {
-    color: $yellow;
-}
-.textNavy {
-    color: $navy;
-}
-.textDarkPurple {
-    color: $darkPurple;
-}
-
-.textSmall {
-	font-size: 12;
-}
-.textMedium {
-	font-size: 16;
-}
-.textLarge {
-	font-size: 20;
-}
-.textXLarge {
-	font-size: 22;
-}
-.textXxLarge {
-	font-size: 26;
-}
-.textXxxLarge {
-	font-size: 32;
+.text2 {
+  font-size: 2rem;
 }
 
 .h10 {
-	height: 10;
+	height: 10rem;
 }
 .h20 {
-	height: 20;
+	height: 20rem;
 }
 .h30 {
-	height: 30;
+	height: 30rem;
 }
 .h40 {
-	height: 40;
+	height: 40rem;
 }
 .h50 {
-	height: 50;
+	height: 50rem;
 }
 
 .textInputLarge {
-  	height: 35px;
-  	width: 200px;
-  	border-radius: 4px;
+  	width: 20rem;
+  	border-radius: 0.25rem;
   	background-color: $white;
-    font-family: Avenir;
-    font-size: 16;
-  	margin: 5px;
-  	padding-left: 40px;
-  	padding-right: 40px;
-  	padding: 5px;
+    font-size: 0.9rem;
+  	margin: 0.25rem;
+  	padding-left: 0.5rem;
+  	padding-right: 0.5rem;
+  	padding: 0.7rem;
   	border: none;
-  	font-weight: lighter;
+    font-weight: light !important;
 }
 
 .buttonLarge {
-	height: 35px;
-	width: 200px;
-	border-radius: 4px;
-	margin: 5px;
-    font-size: 16;
-    border: none;
-    text-align: center;
+	width: 20rem;
+	border-radius: 0.25rem;
+	padding-top: 0.7rem;
+	padding-bottom: 0.7rem;
+	margin: 0.25rem;
+  font-size: 0.9rem;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-weight: light !important;
+}
+
+*:focus {
+    outline: 0;
 }
 
 input {
-	font-weight: lighter;
+	font-weight: light;
 }
 
 body {
-  font-family: 'Avenir';
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -357,12 +187,37 @@ body {
 	height: 100%;
 }
 
+.login-bg {
+  height: 100%;
+  background-image: linear-gradient(
+      rgba(5, 158, 206, 1.0), 
+      rgba(5, 158, 206, 0.6)
+    ), url("../assets/classroom1.jpg");
+  background-size: cover;
+  background-position: 0rem 0rem;
+}
+
+.header {
+  width: 100%;
+  height: 20rem;
+  background-image: linear-gradient(
+      rgba(5, 158, 206, 0.9), 
+      rgba(5, 158, 206, 0.45)
+    ), url("../assets/classroom.jpg");
+  background-size: cover;
+  background-position: 0rem 0rem;
+}
+
 .c-h {
 	justify-content: center;
 }
 
 .c-v {
 	align-items: center;
+}
+
+.p {
+	cursor: pointer;
 }
 
 .c {

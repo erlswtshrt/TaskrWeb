@@ -23787,32 +23787,67 @@ module.exports = require('./lib/React');
 
 },{}],188:[function(require,module,exports){
 var React = require('react/addons');
-var NewProductContainer = require('./NewProductContainer');
+var NewTaskContainer = require('./NewTaskContainer');
 
 var DashboardContainer = React.createClass({displayName: "DashboardContainer",
-	updateDashState: function(__state) {
-		this.setState({ appState: __state });
-	},
 	getInitialState: function() {
-		return {	user: null,
-					dashState: 'newProduct'	};
+		return {	quests: {}	};
 	},
 	componentDidMount: function() {
 		if(this.props.user === null) this.props.updateAppState('login');
+		else {
+			var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+			var usersRef = ref.child("users");
+		    var userRef = usersRef.child(this.props.uid);
+		    var questsRef = userRef.child('quests');
+
+		    var self = this;
+
+			questsRef.on("value", function(snapshot) {
+		      	self.setState({quests: snapshot.val()})
+		    });
+		}
+	},
+	manageQuests: function() {
+		this.props.updateAppState('quests');
+	},
+	manageStudents: function() {
+		this.props.updateAppState('students');
+	},
+	updateQuest: function(quest) {
+		console.log(quest);
+		this.props.updateQuest(quest);
 	},
 	render: function() {
-		switch(this.state.dashState) {
-		    case 'newProduct':
-		        return React.createElement(NewProductContainer, {user: this.props.user, uid: this.props.uid})
-		        break;
-		    default:
-		        return React.createElement("div", null, "rendering error")
+
+		var questList = [];
+
+		console.log(this.state.quests);
+
+		for (var quest in this.state.quests) {
+		   if (this.state.quests.hasOwnProperty(quest)) {
+		       questList.push(React.createElement("div", {className: "buttonLarge bgOrange", onClick: this.updateQuest.bind(null, quest)}, this.state.quests[quest].name));
+		    }
 		}
+
+		return this.props.user === null ? null : 
+		React.createElement("div", null, 
+			React.createElement("div", {className: "header"}, 
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr")
+			), 
+			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
+			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
+			React.createElement("div", {className: "mt3 flex-col c"}, 
+	    		React.createElement("div", {className: "buttonLarge bgBlue textWhite", onClick: this.manageQuests}, "Manage Quests"), 
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt2", onClick: this.manageStudents}, "Manage Students")
+	  		)
+	  	)
 	}
 });
 
 module.exports = DashboardContainer;
-},{"./NewProductContainer":190,"react/addons":14}],189:[function(require,module,exports){
+},{"./NewTaskContainer":191,"react/addons":14}],189:[function(require,module,exports){
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
@@ -23826,7 +23861,7 @@ var LoginContainer = React.createClass({displayName: "LoginContainer",
     var password = React.findDOMNode(this.refs.password).value.trim()
     var self = this;
 
-    var ref = new Firebase("https://shophopanalytics.firebaseio.com");
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
     ref.authWithPassword({
       email    : email,
       password : password
@@ -23838,13 +23873,14 @@ var LoginContainer = React.createClass({displayName: "LoginContainer",
   },
   render: function() {
     return (
-      React.createElement("div", null, 
-        React.createElement("form", null, 
-          React.createElement("input", {type: "text", name: "email", placeholder: "Email", ref: "email"}), 
-          React.createElement("input", {type: "text", name: "password", placeholder: "Password", ref: "password"})
+      React.createElement("div", {className: "flex-col login-bg c"}, 
+        React.createElement("div", {className: "textWhite text2"}, "taskr."), 
+        React.createElement("form", {className: "flex-col mt1"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "email", placeholder: "Email", ref: "email"}), 
+          React.createElement("input", {className: "textInputLarge", type: "password", name: "password", placeholder: "Password", ref: "password"})
         ), 
-        React.createElement("div", {onClick: this.login}, "Log in"), 
-        React.createElement("div", {onClick: this.updateAppState}, "Register")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite", onClick: this.login}, "Log in"), 
+        React.createElement("div", {className: "buttonLarge bgDarkBlue textWhite", onClick: this.updateAppState}, "Register")
       )
     );
   }
@@ -23857,56 +23893,156 @@ var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
 var QRCode = require('qrcode.react');
 
-var NewProductContainer = React.createClass({displayName: "NewProductContainer",
-  getInitialState: function() {
-    return { productId: null }
+var NewQuestContainer = React.createClass({displayName: "NewQuestContainer",
+  createQuestId: function(__quest) {
+    __quest = __quest.replace(/\s+/g, '');
+    return __quest;
   },
-  createProductId: function(__productName) {
-    __productName = __productName.replace(/\s+/g, '');
-    return this.props.uid + __productName;
-  },
-  addProduct: function() {
+  addQuest: function() {
     var id = "0";
-    var id = this.createProductId(React.findDOMNode(this.refs.name).value.trim());
-    this.setState({ productId: id });
+    var id = this.createQuestId(React.findDOMNode(this.refs.name).value.trim());
 
-    var ref = new Firebase("https://shophopanalytics.firebaseio.com");
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
 
     var name = React.findDOMNode(this.refs.name).value.trim();
-    var brand = React.findDOMNode(this.refs.brand).value.trim()
-    var store = React.findDOMNode(this.refs.store).value.trim()
-    var description = React.findDOMNode(this.refs.description).value.trim()
-    var category = React.findDOMNode(this.refs.category).value.trim()
+    var description = React.findDOMNode(this.refs.description).value.trim();
 
-    var productsRef = ref.child("products");
-    productsRef.child(id).set({ 
+    var usersRef = ref.child("users");
+    var userRef = usersRef.child(this.props.uid);
+    var questsRef = userRef.child("quests");
+    questsRef.child(id).set({ 
       name: name,
-      brand: brand,
-      store: store,
       description: description,
-      category: category
     });
   },
   render: function() {
-    var qrCode = this.state.productId === null ? null : React.createElement(QRCode, {value: this.state.productId})
     return (
-      React.createElement("div", null, 
-        qrCode, 
-        React.createElement("form", null, 
-          React.createElement("input", {type: "text", name: "name", placeholder: "Product Name", ref: "name"}), 
-          React.createElement("input", {type: "text", name: "brand", placeholder: "Brand or Designer", ref: "brand"}), 
-          React.createElement("input", {type: "text", name: "store", placeholder: "Store", ref: "store"}), 
-          React.createElement("input", {type: "textarea", name: "description", placeholder: "Description", ref: "description"}), 
-          React.createElement("input", {type: "text", name: "category", placeholder: "Category", ref: "category"})
+      React.createElement("div", {className: "flex-col c bgRed h-full"}, 
+        React.createElement("form", {className: "flex-col"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "name", placeholder: "Name your quest.", ref: "name"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "description", placeholder: "Description", ref: "description"})
         ), 
-        React.createElement("div", {onClick: this.addProduct}, "Add Product")
+        React.createElement("div", {className: "buttonLarge bgYellow", onClick: this.addQuest}, "Add Quest")
       )
     );
   }
 });
 
-module.exports = NewProductContainer;
+module.exports = NewQuestContainer;
 },{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],191:[function(require,module,exports){
+var React = require('react');
+var ReactFireMixin = require('reactfire');
+var Firebase = require('firebase');
+var QRCode = require('qrcode.react');
+
+var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
+  getInitialState: function() {
+    return { taskId: null }
+  },
+  createTaskId: function(__task) {
+    __task = __task.replace(/\s+/g, '');
+    return __task;
+  },
+  addTask: function() {
+    var id = "0";
+    var id = this.createTaskId(React.findDOMNode(this.refs.question).value.trim());
+    this.setState({ productId: id });
+
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+    var question = React.findDOMNode(this.refs.question).value.trim();
+    var option1 = React.findDOMNode(this.refs.option1).value.trim()
+    var option2 = React.findDOMNode(this.refs.option2).value.trim()
+    var option3 = React.findDOMNode(this.refs.option3).value.trim()
+    var option4 = React.findDOMNode(this.refs.option4).value.trim()
+
+    console.log(this.props.questId)
+
+    var usersRef = ref.child("users");
+    var userRef = usersRef.child(this.props.uid);
+    var questsRef = userRef.child("quests");
+    var questRef = questsRef.child(this.props.questId);
+    var tasksRef = questRef.child("tasks")
+    tasksRef.child(id).set({ 
+      question: question,
+      option1: option1,
+      option2: option2,
+      option3: option3,
+      option4: option4
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {className: "flex-col c bgPurple h-full"}, 
+        React.createElement("form", {className: "flex-col"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "question", placeholder: "Question", ref: "question"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "option1", placeholder: "Option 1", ref: "option1"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "option2", placeholder: "Option 2", ref: "option2"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "option3", placeholder: "Option 3", ref: "option3"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "option4", placeholder: "Option 4", ref: "option4"})
+        ), 
+        React.createElement("div", {className: "buttonLarge bgGreen", onClick: this.addTask}, "Add Task")
+      )
+    );
+  }
+});
+
+module.exports = NewTaskContainer;
+},{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],192:[function(require,module,exports){
+var React = require('react/addons');
+var NewTaskContainer = require('./NewTaskContainer');
+
+var QuestsContainer = React.createClass({displayName: "QuestsContainer",
+	getInitialState: function() {
+		return {	quests: {}	};
+	},
+	componentDidMount: function() {
+		var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+		var usersRef = ref.child("users");
+	    var userRef = usersRef.child(this.props.uid);
+	    var questsRef = userRef.child('quests');
+
+	    var self = this;
+
+		questsRef.on("value", function(snapshot) {
+	      	self.setState({quests: snapshot.val()})
+	    });
+	},
+	updateAppState: function() {
+		this.props.updateAppState('new_quest');
+	},
+	updateQuest: function(quest) {
+		this.props.updateQuest(quest);
+	},
+	render: function() {
+
+		var questList = [];
+
+		console.log(this.state.quests);
+
+		for (var quest in this.state.quests) {
+		   if (this.state.quests.hasOwnProperty(quest)) {
+		       questList.push(React.createElement("div", {className: "buttonLarge bgMagenta textWhite", onClick: this.updateQuest.bind(null, quest)}, this.state.quests[quest].name));
+		    }
+		}
+
+		return this.props.user === null ? null : 
+		React.createElement("div", null, 
+			React.createElement("div", {className: "header"}, 
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr")
+			), 
+			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "My Quests"), 
+			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
+			React.createElement("div", {className: "mt3 flex-col c"}, 
+	    		questList
+	  		)
+	  	)
+	}
+});
+
+module.exports = QuestsContainer;
+},{"./NewTaskContainer":191,"react/addons":14}],193:[function(require,module,exports){
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
@@ -23917,7 +24053,7 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
   },
   register: function() {
     var ref = this.ref;
-    var ref = new Firebase('https://shophopanalytics.firebaseio.com/');
+    var ref = new Firebase('https://taskrweb.firebaseio.com/');
     var firstName = React.findDOMNode(this.refs.firstName).value.trim();
     var lastName = React.findDOMNode(this.refs.lastName).value.trim();
     var email = React.findDOMNode(this.refs.email).value.trim();
@@ -23941,38 +24077,46 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
   },
   render: function() {
     return (
-      React.createElement("div", null, 
-        React.createElement("form", null, 
-          React.createElement("input", {type: "text", name: "firstName", placeholder: "First Name", ref: "firstName"}), 
-          React.createElement("input", {type: "text", name: "lastName", placeholder: "Last Name", ref: "lastName"}), 
-          React.createElement("input", {type: "text", name: "email", placeholder: "Email", ref: "email"}), 
-          React.createElement("input", {type: "text", name: "password", placeholder: "Password", ref: "password"})
+      React.createElement("div", {className: "flex-col c bgDarkBlue h-full"}, 
+        React.createElement("form", {className: "flex-col"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "firstName", placeholder: "First Name", ref: "firstName"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "lastName", placeholder: "Last Name", ref: "lastName"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", name: "email", placeholder: "Email", ref: "email"}), 
+          React.createElement("input", {className: "textInputLarge", type: "password", name: "password", placeholder: "Password", ref: "password"})
         ), 
-        React.createElement("div", {onClick: this.register}, "Register")
+        React.createElement("div", {className: "buttonLarge bgYellow", onClick: this.register}, "Register")
       )
     );
   }
 });
 
 module.exports = RegisterContainer;
-},{"firebase":1,"react":186,"reactfire":187}],192:[function(require,module,exports){
+},{"firebase":1,"react":186,"reactfire":187}],194:[function(require,module,exports){
 var React = require('react/addons');
 var LoginContainer = require('./LoginContainer');
 var RegisterContainer = require('./RegisterContainer');
 var DashboardContainer = require('./DashboardContainer');
+var NewQuestContainer = require('./NewQuestContainer');
+var NewTaskContainer = require('./NewTaskContainer');
+var QuestsContainer = require('./QuestsContainer');
 
 var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateAppState: function(__state) {
 		this.setState({ appState: __state });
 	},
+	updateQuest: function(__id) {
+		this.setState({ appState: 'edit_quest',
+						questId: __id });
+	},
 	getInitialState: function() {
 		return {	user: null,
-					appState: 'home'	};
+					appState: 'home',
+					questId: null	};
 	},
 	setUser: function(__uid) {
 		var self = this;
 	    var ref = this.ref;
-	    ref = new Firebase('https://shophopanalytics.firebaseio.com/');
+	    ref = new Firebase('https://taskrweb.firebaseio.com/');
 
 	    var usersRef = ref.child("users");
 	    var userRef = usersRef.child(__uid);
@@ -23986,13 +24130,22 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 	render: function() {
 		switch(this.state.appState) {
 		    case 'home':
-		        return React.createElement(DashboardContainer, {user: this.state.user, updateAppState: this.updateAppState, uid: this.state.uid})
+		        return React.createElement(DashboardContainer, {user: this.state.user, updateAppState: this.updateAppState, updateQuest: this.updateQuest, uid: this.state.uid})
 		        break;
 		    case 'login':
 		        return React.createElement(LoginContainer, {setUser: this.setUser, updateAppState: this.updateAppState})
 		        break;
 		    case 'register':
 		        return React.createElement(RegisterContainer, null)
+		        break;
+		    case 'new_quest':
+		        return React.createElement(NewQuestContainer, {uid: this.state.uid, updateQuest: this.updateQuest})
+		        break;
+		    case 'edit_quest':
+		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId})
+		        break;
+		   	case 'quests':
+		        return React.createElement(QuestsContainer, {uid: this.state.uid, questId: this.state.questId})
 		        break;
 		    default:
 		        return React.createElement("div", null, "rendering error")
@@ -24001,4 +24154,4 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 });
 
 React.render(React.createElement(MasterContainer, null), document.body);
-},{"./DashboardContainer":188,"./LoginContainer":189,"./RegisterContainer":191,"react/addons":14}]},{},[192])
+},{"./DashboardContainer":188,"./LoginContainer":189,"./NewQuestContainer":190,"./NewTaskContainer":191,"./QuestsContainer":192,"./RegisterContainer":193,"react/addons":14}]},{},[194])
