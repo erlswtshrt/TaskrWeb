@@ -39,12 +39,13 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 		return this.props.user === null ? null : 
 		React.createElement("div", null, 
 			React.createElement("div", {className: "header"}, 
-				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr")
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "My Quests"), 
+			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "My Quests"), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
 			React.createElement("div", {className: "mt3 flex-col c"}, 
-	    		questList
+	    		questList, 
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.updateAppState}, "New Quest")
 	  		)
 	  	)
 	}

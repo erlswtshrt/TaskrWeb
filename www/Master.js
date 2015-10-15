@@ -23834,7 +23834,7 @@ var DashboardContainer = React.createClass({displayName: "DashboardContainer",
 		return this.props.user === null ? null : 
 		React.createElement("div", null, 
 			React.createElement("div", {className: "header"}, 
-				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr")
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
 			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
@@ -24030,12 +24030,13 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 		return this.props.user === null ? null : 
 		React.createElement("div", null, 
 			React.createElement("div", {className: "header"}, 
-				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr")
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "My Quests"), 
+			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "My Quests"), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
 			React.createElement("div", {className: "mt3 flex-col c"}, 
-	    		questList
+	    		questList, 
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.updateAppState}, "New Quest")
 	  		)
 	  	)
 	}
@@ -24093,19 +24094,107 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
 module.exports = RegisterContainer;
 },{"firebase":1,"react":186,"reactfire":187}],194:[function(require,module,exports){
 var React = require('react/addons');
+
+var TaskCard = React.createClass({displayName: "TaskCard",
+	removeTask: function() {
+		this.props.removeTask();
+	},
+	render: function() {
+
+		return (React.createElement("div", {className: "mt1"}, 
+					React.createElement("div", {className: "card-header textWhite bgMagenta text0.9"}, this.props.task.question, React.createElement("span", {className: "p floatRight", onClick: this.removeTask}, "x")), 
+					React.createElement("div", {className: "card-body"}, 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "A."), "  ", this.props.task.option1), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "B."), "  ", this.props.task.option2), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "C."), "  ", this.props.task.option3), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "D."), "  ", this.props.task.option4)
+					)
+				));
+	}
+});
+
+module.exports = TaskCard;
+},{"react/addons":14}],195:[function(require,module,exports){
+var React = require('react/addons');
+var TaskCard = require('./TaskCard');
+
+var QuestsContainer = React.createClass({displayName: "QuestsContainer",
+	getInitialState: function() {
+		return {	tasks: {}	};
+	},
+	componentDidMount: function() {
+		var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+		var usersRef = ref.child("users");
+	    var userRef = usersRef.child(this.props.uid);
+	    var questsRef = userRef.child('quests');
+	    var questRef = questsRef.child(this.props.questId);
+	    var tasksRef = questRef.child('tasks')
+
+	    var self = this;
+
+		tasksRef.on("value", function(snapshot) {
+	      	self.setState({tasks: snapshot.val()})
+	    });
+	},
+	updateAppState: function() {
+		this.props.updateAppState('new_quest');
+	},
+	addTaskToQuest: function(quest) {
+		this.props.addTaskToQuest(quest);
+	},
+	removeTask: function(__task) {
+		var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+		var taskToRemove = ref.child("users").child(this.props.uid).child('quests').child(this.props.questId).child('tasks').child(__task);
+		taskToRemove.remove();
+	},
+	render: function() {
+
+		var taskList = [];
+
+		for (var task in this.state.tasks) {
+		   if (this.state.tasks.hasOwnProperty(task)) {
+		       taskList.push(React.createElement(TaskCard, {task: this.state.tasks[task], removeTask: this.removeTask.bind(null, task)}));
+		    }
+		}
+
+		return this.props.user === null ? null : 
+		React.createElement("div", null, 
+			React.createElement("div", {className: "header"}, 
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
+			), 
+			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "Tasks"), 
+			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
+			React.createElement("div", {className: "mt1 flex-col c-v"}, 
+	    		taskList, 
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.addTaskToQuest.bind(null, this.props.questId)}, "Add Task")
+	  		)
+	  	)
+	}
+});
+
+module.exports = QuestsContainer;
+},{"./TaskCard":194,"react/addons":14}],196:[function(require,module,exports){
+var React = require('react/addons');
 var LoginContainer = require('./LoginContainer');
 var RegisterContainer = require('./RegisterContainer');
 var DashboardContainer = require('./DashboardContainer');
 var NewQuestContainer = require('./NewQuestContainer');
 var NewTaskContainer = require('./NewTaskContainer');
 var QuestsContainer = require('./QuestsContainer');
+var TasksContainer = require('./TasksContainer');
 
 var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateAppState: function(__state) {
 		this.setState({ appState: __state });
 	},
+	addTaskToQuest: function(__id) {
+		this.setState({ appState: 'new_task',
+						questId: __id });
+	},
 	updateQuest: function(__id) {
-		this.setState({ appState: 'edit_quest',
+		this.setState({ appState: 'tasks',
 						questId: __id });
 	},
 	getInitialState: function() {
@@ -24141,11 +24230,14 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 		    case 'new_quest':
 		        return React.createElement(NewQuestContainer, {uid: this.state.uid, updateQuest: this.updateQuest})
 		        break;
-		    case 'edit_quest':
+		    case 'new_task':
 		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId})
 		        break;
+		    case 'tasks':
+		    	return React.createElement(TasksContainer, {uid: this.state.uid, questId: this.state.questId, addTaskToQuest: this.addTaskToQuest})
+		    	break;
 		   	case 'quests':
-		        return React.createElement(QuestsContainer, {uid: this.state.uid, questId: this.state.questId})
+		        return React.createElement(QuestsContainer, {uid: this.state.uid, questId: this.state.questId, updateQuest: this.updateQuest, updateAppState: this.updateAppState})
 		        break;
 		    default:
 		        return React.createElement("div", null, "rendering error")
@@ -24154,4 +24246,4 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 });
 
 React.render(React.createElement(MasterContainer, null), document.body);
-},{"./DashboardContainer":188,"./LoginContainer":189,"./NewQuestContainer":190,"./NewTaskContainer":191,"./QuestsContainer":192,"./RegisterContainer":193,"react/addons":14}]},{},[194])
+},{"./DashboardContainer":188,"./LoginContainer":189,"./NewQuestContainer":190,"./NewTaskContainer":191,"./QuestsContainer":192,"./RegisterContainer":193,"./TasksContainer":195,"react/addons":14}]},{},[196])

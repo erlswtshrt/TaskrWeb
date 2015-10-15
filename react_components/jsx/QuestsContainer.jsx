@@ -41,10 +41,11 @@ var QuestsContainer = React.createClass({
 			<div className="header">
 				<div className="ml3 pt3 textWhite text2">taskr.</div>
 			</div>
-			<div className="ml3 mt3 textBlue text1-2">My Quests</div>
+			<div className="ml3 mt3 textMagenta text1-2">My Quests</div>
 			<hr className="mt1 ml3 mr3" />
 			<div className="mt3 flex-col c">
 	    		{questList}
+	    		<div className="buttonLarge bgGreen textWhite mt3" onClick={this.updateAppState}>New Quest</div>
 	  		</div>
 	  	</div>
 	}

@@ -23,6 +23,9 @@ hr {
 .textBlue {
   color: #059ece; }
 
+.textMagenta {
+  color: #d6639d; }
+
 .bgBlue {
   background-color: #059ece; }
 
@@ -76,6 +79,9 @@ hr {
 
 .textGrey {
   color: #B1B1B1; }
+
+.text0-9 {
+  font-size: 0.9rem; }
 
 .text1-2 {
   font-size: 1.2rem; }
@@ -152,6 +158,36 @@ body {
   background-image: linear-gradient(#059ece, rgba(5, 158, 206, 0.6)), url("../assets/classroom1.jpg");
   background-size: cover;
   background-position: 0rem 0rem; }
+
+.card-header {
+  padding: 0.5rem;
+  width: 29rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem; }
+
+.card-body {
+  padding: 0.5rem;
+  width: 28.9rem;
+  border-left-width: 0.1rem;
+  border-left-style: solid;
+  border-left-color: #ccc;
+  border-bottom-width: 0.1rem;
+  border-bottom-style: solid;
+  border-bottom-color: #ccc;
+  border-right-width: 0.1rem;
+  border-right-style: solid;
+  border-right-color: #ccc;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem; }
+
+.p-0-25 {
+  padding: 0.25rem; }
+
+.textRight {
+  text-align: right; }
+
+.floatRight {
+  float: right; }
 
 .header {
   width: 100%;

@@ -5,13 +5,18 @@ var DashboardContainer = require('./DashboardContainer');
 var NewQuestContainer = require('./NewQuestContainer');
 var NewTaskContainer = require('./NewTaskContainer');
 var QuestsContainer = require('./QuestsContainer');
+var TasksContainer = require('./TasksContainer');
 
 var MasterContainer = React.createClass({
 	updateAppState: function(__state) {
 		this.setState({ appState: __state });
 	},
+	addTaskToQuest: function(__id) {
+		this.setState({ appState: 'new_task',
+						questId: __id });
+	},
 	updateQuest: function(__id) {
-		this.setState({ appState: 'edit_quest',
+		this.setState({ appState: 'tasks',
 						questId: __id });
 	},
 	getInitialState: function() {
@@ -47,11 +52,14 @@ var MasterContainer = React.createClass({
 		    case 'new_quest':
 		        return <NewQuestContainer uid={this.state.uid} updateQuest={this.updateQuest}/>
 		        break;
-		    case 'edit_quest':
+		    case 'new_task':
 		        return <NewTaskContainer uid={this.state.uid} questId={this.state.questId}/>
 		        break;
+		    case 'tasks':
+		    	return <TasksContainer uid={this.state.uid} questId={this.state.questId} addTaskToQuest={this.addTaskToQuest} />
+		    	break;
 		   	case 'quests':
-		        return <QuestsContainer uid={this.state.uid} questId={this.state.questId}/>
+		        return <QuestsContainer uid={this.state.uid} questId={this.state.questId} updateQuest={this.updateQuest} updateAppState={this.updateAppState}/>
 		        break;
 		    default:
 		        return <div>rendering error</div>
