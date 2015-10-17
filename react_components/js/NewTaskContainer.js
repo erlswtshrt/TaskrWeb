@@ -49,7 +49,7 @@ var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option3", placeholder: "Option 3", ref: "option3"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option4", placeholder: "Option 4", ref: "option4"})
         ), 
-        React.createElement("div", {className: "buttonLarge bgGreen", onClick: this.addTask}, "Add Task")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addTask}, "Add Task")
       )
     );
   }

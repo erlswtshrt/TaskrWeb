@@ -17,11 +17,20 @@ hr {
 .text-l {
   font-weight: light; }
 
+.textPurple {
+  color: #916fb5; }
+
 .textWhite {
   color: #ffffff; }
 
+.textGreen {
+  color: #42c697; }
+
 .textBlue {
   color: #059ece; }
+
+.textLightBlue {
+  color: #4bc8dd; }
 
 .textMagenta {
   color: #d6639d; }
@@ -59,6 +68,9 @@ hr {
 .bgNavy {
   background-color: #3D4957; }
 
+.mt0-5 {
+  margin-top: 0.5rem; }
+
 .mt1 {
   margin-top: 1rem; }
 
@@ -68,8 +80,17 @@ hr {
 .mt3 {
   margin-top: 3rem; }
 
+.mb1 {
+  margin-bottom: 1rem; }
+
+.mb3 {
+  margin-bottom: 3rem; }
+
 .pt3 {
   padding-top: 3rem; }
+
+.ml1 {
+  margin-left: 1rem; }
 
 .ml3 {
   margin-left: 3rem; }
@@ -161,9 +182,11 @@ body {
 
 .card-header {
   padding: 0.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
   width: 29rem;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem; }
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem; }
 
 .card-body {
   padding: 0.5rem;
@@ -180,8 +203,22 @@ body {
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem; }
 
+.br-0-25 {
+  border-radius: 0.25rem; }
+
+.sizeIcon {
+  height: 30px;
+  width: 30px; }
+
+.sizeIconSmall {
+  height: 20px;
+  width: 20px; }
+
 .p-0-25 {
   padding: 0.25rem; }
+
+.p-0-5 {
+  padding: 0.5rem; }
 
 .textRight {
   text-align: right; }

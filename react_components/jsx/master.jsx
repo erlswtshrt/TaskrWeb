@@ -6,6 +6,8 @@ var NewQuestContainer = require('./NewQuestContainer');
 var NewTaskContainer = require('./NewTaskContainer');
 var QuestsContainer = require('./QuestsContainer');
 var TasksContainer = require('./TasksContainer');
+var StudentsContainer = require('./StudentsContainer');
+var NewStudentContainer = require('./NewStudentContainer');
 
 var MasterContainer = React.createClass({
 	updateAppState: function(__state) {
@@ -18,6 +20,9 @@ var MasterContainer = React.createClass({
 	updateQuest: function(__id) {
 		this.setState({ appState: 'tasks',
 						questId: __id });
+	},
+	viewStudent: function() {
+		return false;
 	},
 	getInitialState: function() {
 		return {	user: null,
@@ -53,13 +58,19 @@ var MasterContainer = React.createClass({
 		        return <NewQuestContainer uid={this.state.uid} updateQuest={this.updateQuest}/>
 		        break;
 		    case 'new_task':
-		        return <NewTaskContainer uid={this.state.uid} questId={this.state.questId}/>
+		        return <NewTaskContainer uid={this.state.uid} questId={this.state.questId} updateAppState={this.updateAppState}/>
 		        break;
 		    case 'tasks':
-		    	return <TasksContainer uid={this.state.uid} questId={this.state.questId} addTaskToQuest={this.addTaskToQuest} />
+		    	return <TasksContainer uid={this.state.uid} questId={this.state.questId} addTaskToQuest={this.addTaskToQuest} updateAppState={this.updateAppState} />
 		    	break;
 		   	case 'quests':
 		        return <QuestsContainer uid={this.state.uid} questId={this.state.questId} updateQuest={this.updateQuest} updateAppState={this.updateAppState}/>
+		        break;
+		    case 'students':
+		        return <StudentsContainer uid={this.state.uid} studentId={this.state.studentId} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
+		        break;
+		   	case 'new_student':
+		        return <NewStudentContainer uid={this.state.uid} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
 		        break;
 		    default:
 		        return <div>rendering error</div>

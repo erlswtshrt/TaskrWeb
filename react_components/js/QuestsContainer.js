@@ -18,8 +18,8 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 	      	self.setState({quests: snapshot.val()})
 	    });
 	},
-	updateAppState: function() {
-		this.props.updateAppState('new_quest');
+	updateAppState: function(__newState) {
+		this.props.updateAppState(__newState);
 	},
 	updateQuest: function(quest) {
 		this.props.updateQuest(quest);
@@ -41,11 +41,17 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 			React.createElement("div", {className: "header"}, 
 				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "My Quests"), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text-l"}, React.createElement("span", {className: "p", onClick: this.updateAppState.bind(null, "home")}, "Home"), "   >   Quests"), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
-			React.createElement("div", {className: "mt3 flex-col c"}, 
+			React.createElement("div", {className: "flex-row ml3"}, 
+				React.createElement("div", {className: "bgMagenta p-0-25 sizeIcon mt0-5 br-0-25"}, 
+					React.createElement("img", {className: "sizeIcon", src: "www/assets/new_custom88.svg"})
+				), 
+				React.createElement("div", {className: "ml1 mt1 textMagenta text-l"}, "My Quests")
+			), 
+			React.createElement("div", {className: "mt3 flex-col c mb3"}, 
 	    		questList, 
-	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.updateAppState}, "New Quest")
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt1", onClick: this.updateAppState.bind(null, "new_quest")}, "New Quest")
 	  		)
 	  	)
 	}

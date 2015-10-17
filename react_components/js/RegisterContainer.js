@@ -32,7 +32,7 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
   },
   render: function() {
     return (
-      React.createElement("div", {className: "flex-col c bgDarkBlue h-full"}, 
+      React.createElement("div", {className: "flex-col c bgDarkBlue h-full mb3"}, 
         React.createElement("form", {className: "flex-col"}, 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "firstName", placeholder: "First Name", ref: "firstName"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "lastName", placeholder: "Last Name", ref: "lastName"}), 

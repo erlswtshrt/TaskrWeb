@@ -48,9 +48,9 @@ var DashboardContainer = React.createClass({displayName: "DashboardContainer",
 			React.createElement("div", {className: "header"}, 
 				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
-			React.createElement("div", {className: "mt3 flex-col c"}, 
+			React.createElement("div", {className: "mt3 flex-col c mb3"}, 
 	    		React.createElement("div", {className: "buttonLarge bgBlue textWhite", onClick: this.manageQuests}, "Manage Quests"), 
 	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt2", onClick: this.manageStudents}, "Manage Students")
 	  		)

@@ -6,6 +6,8 @@ var NewQuestContainer = require('./NewQuestContainer');
 var NewTaskContainer = require('./NewTaskContainer');
 var QuestsContainer = require('./QuestsContainer');
 var TasksContainer = require('./TasksContainer');
+var StudentsContainer = require('./StudentsContainer');
+var NewStudentContainer = require('./NewStudentContainer');
 
 var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateAppState: function(__state) {
@@ -18,6 +20,9 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateQuest: function(__id) {
 		this.setState({ appState: 'tasks',
 						questId: __id });
+	},
+	viewStudent: function() {
+		return false;
 	},
 	getInitialState: function() {
 		return {	user: null,
@@ -53,13 +58,19 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 		        return React.createElement(NewQuestContainer, {uid: this.state.uid, updateQuest: this.updateQuest})
 		        break;
 		    case 'new_task':
-		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId})
+		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId, updateAppState: this.updateAppState})
 		        break;
 		    case 'tasks':
-		    	return React.createElement(TasksContainer, {uid: this.state.uid, questId: this.state.questId, addTaskToQuest: this.addTaskToQuest})
+		    	return React.createElement(TasksContainer, {uid: this.state.uid, questId: this.state.questId, addTaskToQuest: this.addTaskToQuest, updateAppState: this.updateAppState})
 		    	break;
 		   	case 'quests':
 		        return React.createElement(QuestsContainer, {uid: this.state.uid, questId: this.state.questId, updateQuest: this.updateQuest, updateAppState: this.updateAppState})
+		        break;
+		    case 'students':
+		        return React.createElement(StudentsContainer, {uid: this.state.uid, studentId: this.state.studentId, viewStudent: this.viewStudent, updateAppState: this.updateAppState})
+		        break;
+		   	case 'new_student':
+		        return React.createElement(NewStudentContainer, {uid: this.state.uid, viewStudent: this.viewStudent, updateAppState: this.updateAppState})
 		        break;
 		    default:
 		        return React.createElement("div", null, "rendering error")

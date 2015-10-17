@@ -32,7 +32,7 @@ var NewQuestContainer = React.createClass({
           <input className="textInputLarge" type="text" name="name" placeholder="Name your quest." ref="name" />
           <input className="textInputLarge" type="text" name="description" placeholder="Description" ref="description" />
         </form>
-        <div className="buttonLarge bgYellow" onClick={this.addQuest}>Add Quest</div>
+        <div className="buttonLarge bgGreen textWhite mb3" onClick={this.addQuest}>Add Quest</div>
       </div>
     );
   }

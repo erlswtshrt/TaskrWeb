@@ -23836,9 +23836,9 @@ var DashboardContainer = React.createClass({displayName: "DashboardContainer",
 			React.createElement("div", {className: "header"}, 
 				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text1-2"}, "Welcome, ", this.props.user.firstName), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
-			React.createElement("div", {className: "mt3 flex-col c"}, 
+			React.createElement("div", {className: "mt3 flex-col c mb3"}, 
 	    		React.createElement("div", {className: "buttonLarge bgBlue textWhite", onClick: this.manageQuests}, "Manage Quests"), 
 	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt2", onClick: this.manageStudents}, "Manage Students")
 	  		)
@@ -23847,7 +23847,7 @@ var DashboardContainer = React.createClass({displayName: "DashboardContainer",
 });
 
 module.exports = DashboardContainer;
-},{"./NewTaskContainer":191,"react/addons":14}],189:[function(require,module,exports){
+},{"./NewTaskContainer":192,"react/addons":14}],189:[function(require,module,exports){
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
@@ -23922,7 +23922,7 @@ var NewQuestContainer = React.createClass({displayName: "NewQuestContainer",
           React.createElement("input", {className: "textInputLarge", type: "text", name: "name", placeholder: "Name your quest.", ref: "name"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "description", placeholder: "Description", ref: "description"})
         ), 
-        React.createElement("div", {className: "buttonLarge bgYellow", onClick: this.addQuest}, "Add Quest")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addQuest}, "Add Quest")
       )
     );
   }
@@ -23930,6 +23930,51 @@ var NewQuestContainer = React.createClass({displayName: "NewQuestContainer",
 
 module.exports = NewQuestContainer;
 },{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],191:[function(require,module,exports){
+var React = require('react');
+var ReactFireMixin = require('reactfire');
+var Firebase = require('firebase');
+var QRCode = require('qrcode.react');
+
+var NewStudentContainer = React.createClass({displayName: "NewStudentContainer",
+  createStudentId: function(__student) {
+    __student = __student.replace(/\s+/g, '');
+    return __student;
+  },
+  addQuest: function() {
+    var id = "0";
+    var id = this.createStudentId(React.findDOMNode(this.refs.firstName).value.trim() + React.findDOMNode(this.refs.lastName).value.trim());
+
+    var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+    var firstName = React.findDOMNode(this.refs.firstName).value.trim();
+    var lastName = React.findDOMNode(this.refs.lastName).value.trim();
+    var age = React.findDOMNode(this.refs.age).value.trim();
+
+    var usersRef = ref.child("users");
+    var userRef = usersRef.child(this.props.uid);
+    var studentsRef = userRef.child("students");
+    studentsRef.child(id).set({ 
+      firstName: firstName,
+      lastName: lastName,
+      age: age
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {className: "flex-col c bgRed h-full"}, 
+        React.createElement("form", {className: "flex-col"}, 
+          React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "First name", ref: "firstName"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "Last name", ref: "lastName"}), 
+          React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "Age", ref: "age"})
+        ), 
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addQuest}, "Register Student")
+      )
+    );
+  }
+});
+
+module.exports = NewStudentContainer;
+},{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],192:[function(require,module,exports){
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
@@ -23981,14 +24026,14 @@ var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option3", placeholder: "Option 3", ref: "option3"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option4", placeholder: "Option 4", ref: "option4"})
         ), 
-        React.createElement("div", {className: "buttonLarge bgGreen", onClick: this.addTask}, "Add Task")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addTask}, "Add Task")
       )
     );
   }
 });
 
 module.exports = NewTaskContainer;
-},{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],192:[function(require,module,exports){
+},{"firebase":1,"qrcode.react":3,"react":186,"reactfire":187}],193:[function(require,module,exports){
 var React = require('react/addons');
 var NewTaskContainer = require('./NewTaskContainer');
 
@@ -24009,8 +24054,8 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 	      	self.setState({quests: snapshot.val()})
 	    });
 	},
-	updateAppState: function() {
-		this.props.updateAppState('new_quest');
+	updateAppState: function(__newState) {
+		this.props.updateAppState(__newState);
 	},
 	updateQuest: function(quest) {
 		this.props.updateQuest(quest);
@@ -24032,18 +24077,24 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 			React.createElement("div", {className: "header"}, 
 				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "My Quests"), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text-l"}, React.createElement("span", {className: "p", onClick: this.updateAppState.bind(null, "home")}, "Home"), "   >   Quests"), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
-			React.createElement("div", {className: "mt3 flex-col c"}, 
+			React.createElement("div", {className: "flex-row ml3"}, 
+				React.createElement("div", {className: "bgMagenta p-0-25 sizeIcon mt0-5 br-0-25"}, 
+					React.createElement("img", {className: "sizeIcon", src: "www/assets/new_custom88.svg"})
+				), 
+				React.createElement("div", {className: "ml1 mt1 textMagenta text-l"}, "My Quests")
+			), 
+			React.createElement("div", {className: "mt3 flex-col c mb3"}, 
 	    		questList, 
-	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.updateAppState}, "New Quest")
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt1", onClick: this.updateAppState.bind(null, "new_quest")}, "New Quest")
 	  		)
 	  	)
 	}
 });
 
 module.exports = QuestsContainer;
-},{"./NewTaskContainer":191,"react/addons":14}],193:[function(require,module,exports){
+},{"./NewTaskContainer":192,"react/addons":14}],194:[function(require,module,exports){
 var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
@@ -24078,7 +24129,7 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
   },
   render: function() {
     return (
-      React.createElement("div", {className: "flex-col c bgDarkBlue h-full"}, 
+      React.createElement("div", {className: "flex-col c bgDarkBlue h-full mb3"}, 
         React.createElement("form", {className: "flex-col"}, 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "firstName", placeholder: "First Name", ref: "firstName"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "lastName", placeholder: "Last Name", ref: "lastName"}), 
@@ -24092,7 +24143,68 @@ var RegisterContainer = React.createClass({displayName: "RegisterContainer",
 });
 
 module.exports = RegisterContainer;
-},{"firebase":1,"react":186,"reactfire":187}],194:[function(require,module,exports){
+},{"firebase":1,"react":186,"reactfire":187}],195:[function(require,module,exports){
+var React = require('react/addons');
+var NewTaskContainer = require('./NewTaskContainer');
+
+var StudentsContainer = React.createClass({displayName: "StudentsContainer",
+	getInitialState: function() {
+		return {	students: {}	};
+	},
+	componentDidMount: function() {
+		var ref = new Firebase("https://taskrweb.firebaseio.com");
+
+		var usersRef = ref.child("users");
+	    var userRef = usersRef.child(this.props.uid);
+	    var studentsRef = userRef.child('students');
+
+	    var self = this;
+
+		studentsRef.on("value", function(snapshot) {
+	      	self.setState({students: snapshot.val()})
+	    });
+	},
+	updateAppState: function(__newState) {
+		this.props.updateAppState(__newState);
+	},
+	viewStudent: function(student) {
+		this.props.viewStudent(student);
+	},
+	render: function() {
+
+		var studentList = [];
+
+		console.log(this.state.students);
+
+		for (var student in this.state.students) {
+		   if (this.state.students.hasOwnProperty(student)) {
+		       studentList.push(React.createElement("div", {className: "buttonLarge bgPurple textWhite", onClick: this.viewStudent.bind(null, student)}, this.state.students[student].firstName, " ", this.state.students[student].lastName));
+		    }
+		}
+
+		return this.props.user === null ? null : 
+		React.createElement("div", null, 
+			React.createElement("div", {className: "header"}, 
+				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
+			), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text-l"}, React.createElement("span", {className: "p", onClick: this.updateAppState.bind(null, "home")}, "Home"), "   >   Students"), 
+			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
+			React.createElement("div", {className: "flex-row ml3"}, 
+				React.createElement("div", {className: "bgPurple p-0-25 sizeIcon mt0-5 br-0-25"}, 
+					React.createElement("img", {className: "sizeIcon", src: "www/assets/new_custom88.svg"})
+				), 
+				React.createElement("div", {className: "ml1 mt1 textPurple text-l"}, "My Students")
+			), 
+			React.createElement("div", {className: "mt3 flex-col c mb3"}, 
+	    		studentList, 
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt1", onClick: this.updateAppState.bind(null, "new_student")}, "New student")
+	  		)
+	  	)
+	}
+});
+
+module.exports = StudentsContainer;
+},{"./NewTaskContainer":192,"react/addons":14}],196:[function(require,module,exports){
 var React = require('react/addons');
 
 var TaskCard = React.createClass({displayName: "TaskCard",
@@ -24101,26 +24213,27 @@ var TaskCard = React.createClass({displayName: "TaskCard",
 	},
 	render: function() {
 
-		return (React.createElement("div", {className: "mt1"}, 
-					React.createElement("div", {className: "card-header textWhite bgMagenta text0.9"}, this.props.task.question, React.createElement("span", {className: "p floatRight", onClick: this.removeTask}, "x")), 
+		return (React.createElement("div", {className: "mt1 mb1"}, 
+					React.createElement("div", {className: "card-header textWhite bgGreen text0.9"}, this.props.task.question, React.createElement("img", {className: "p sizeIconSmall floatRight", src: "www/assets/delete.svg", onClick: this.removeTask})), 
 					React.createElement("div", {className: "card-body"}, 
-						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "A."), "  ", this.props.task.option1), 
-						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "B."), "  ", this.props.task.option2), 
-						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "C."), "  ", this.props.task.option3), 
-						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textMagenta"}, "D."), "  ", this.props.task.option4)
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textGreen"}, "a.  "), "  ", this.props.task.option1), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textGreen"}, "b.  "), "  ", this.props.task.option2), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textGreen"}, "c.  "), "  ", this.props.task.option3), 
+						React.createElement("div", {className: "p-0-25 text0-9"}, React.createElement("span", {className: "textGreen"}, "d.  "), "  ", this.props.task.option4)
 					)
 				));
 	}
 });
 
 module.exports = TaskCard;
-},{"react/addons":14}],195:[function(require,module,exports){
+},{"react/addons":14}],197:[function(require,module,exports){
 var React = require('react/addons');
 var TaskCard = require('./TaskCard');
 
 var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 	getInitialState: function() {
-		return {	tasks: {}	};
+		return {	tasks: {},
+					questName: ""	};
 	},
 	componentDidMount: function() {
 		var ref = new Firebase("https://taskrweb.firebaseio.com");
@@ -24133,12 +24246,19 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 
 	    var self = this;
 
+	    questRef.on("value", function(snapshot) {
+	    	self.setState({
+	    		questName: snapshot.val().name
+	    	})
+	    });
+
 		tasksRef.on("value", function(snapshot) {
-	      	self.setState({tasks: snapshot.val()})
+	      	self.setState({
+	      		tasks: snapshot.val()})
 	    });
 	},
-	updateAppState: function() {
-		this.props.updateAppState('new_quest');
+	updateAppState: function(__newState) {
+		this.props.updateAppState(__newState);
 	},
 	addTaskToQuest: function(quest) {
 		this.props.addTaskToQuest(quest);
@@ -24164,18 +24284,24 @@ var QuestsContainer = React.createClass({displayName: "QuestsContainer",
 			React.createElement("div", {className: "header"}, 
 				React.createElement("div", {className: "ml3 pt3 textWhite text2"}, "taskr.")
 			), 
-			React.createElement("div", {className: "ml3 mt3 textMagenta text1-2"}, "Tasks"), 
+			React.createElement("div", {className: "ml3 mt2 textBlue text-l"}, React.createElement("span", {className: "p", onClick: this.updateAppState.bind(null, "home")}, "Home    >   "), React.createElement("span", {className: "p", onClick: this.updateAppState.bind(null, "quests")}, "Quests    >   "), "Tasks"), 
 			React.createElement("hr", {className: "mt1 ml3 mr3"}), 
-			React.createElement("div", {className: "mt1 flex-col c-v"}, 
+			React.createElement("div", {className: "flex-row ml3"}, 
+				React.createElement("div", {className: "bgGreen p-0-25 sizeIcon mt0-5 br-0-25"}, 
+					React.createElement("img", {className: "sizeIcon", src: "www/assets/new_custom88.svg"})
+				), 
+				React.createElement("div", {className: "ml1 mt1 textGreen text-l"}, this.state.questName, " Tasks")
+			), 
+			React.createElement("div", {className: "mt1 flex-col c-v mb3"}, 
 	    		taskList, 
-	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt3", onClick: this.addTaskToQuest.bind(null, this.props.questId)}, "Add Task")
+	    		React.createElement("div", {className: "buttonLarge bgGreen textWhite mt1", onClick: this.addTaskToQuest.bind(null, this.props.questId)}, "Add Task")
 	  		)
 	  	)
 	}
 });
 
 module.exports = QuestsContainer;
-},{"./TaskCard":194,"react/addons":14}],196:[function(require,module,exports){
+},{"./TaskCard":196,"react/addons":14}],198:[function(require,module,exports){
 var React = require('react/addons');
 var LoginContainer = require('./LoginContainer');
 var RegisterContainer = require('./RegisterContainer');
@@ -24184,6 +24310,8 @@ var NewQuestContainer = require('./NewQuestContainer');
 var NewTaskContainer = require('./NewTaskContainer');
 var QuestsContainer = require('./QuestsContainer');
 var TasksContainer = require('./TasksContainer');
+var StudentsContainer = require('./StudentsContainer');
+var NewStudentContainer = require('./NewStudentContainer');
 
 var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateAppState: function(__state) {
@@ -24196,6 +24324,9 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 	updateQuest: function(__id) {
 		this.setState({ appState: 'tasks',
 						questId: __id });
+	},
+	viewStudent: function() {
+		return false;
 	},
 	getInitialState: function() {
 		return {	user: null,
@@ -24231,13 +24362,19 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 		        return React.createElement(NewQuestContainer, {uid: this.state.uid, updateQuest: this.updateQuest})
 		        break;
 		    case 'new_task':
-		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId})
+		        return React.createElement(NewTaskContainer, {uid: this.state.uid, questId: this.state.questId, updateAppState: this.updateAppState})
 		        break;
 		    case 'tasks':
-		    	return React.createElement(TasksContainer, {uid: this.state.uid, questId: this.state.questId, addTaskToQuest: this.addTaskToQuest})
+		    	return React.createElement(TasksContainer, {uid: this.state.uid, questId: this.state.questId, addTaskToQuest: this.addTaskToQuest, updateAppState: this.updateAppState})
 		    	break;
 		   	case 'quests':
 		        return React.createElement(QuestsContainer, {uid: this.state.uid, questId: this.state.questId, updateQuest: this.updateQuest, updateAppState: this.updateAppState})
+		        break;
+		    case 'students':
+		        return React.createElement(StudentsContainer, {uid: this.state.uid, studentId: this.state.studentId, viewStudent: this.viewStudent, updateAppState: this.updateAppState})
+		        break;
+		   	case 'new_student':
+		        return React.createElement(NewStudentContainer, {uid: this.state.uid, viewStudent: this.viewStudent, updateAppState: this.updateAppState})
 		        break;
 		    default:
 		        return React.createElement("div", null, "rendering error")
@@ -24246,4 +24383,4 @@ var MasterContainer = React.createClass({displayName: "MasterContainer",
 });
 
 React.render(React.createElement(MasterContainer, null), document.body);
-},{"./DashboardContainer":188,"./LoginContainer":189,"./NewQuestContainer":190,"./NewTaskContainer":191,"./QuestsContainer":192,"./RegisterContainer":193,"./TasksContainer":195,"react/addons":14}]},{},[196])
+},{"./DashboardContainer":188,"./LoginContainer":189,"./NewQuestContainer":190,"./NewStudentContainer":191,"./NewTaskContainer":192,"./QuestsContainer":193,"./RegisterContainer":194,"./StudentsContainer":195,"./TasksContainer":197,"react/addons":14}]},{},[198])

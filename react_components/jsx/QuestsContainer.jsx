@@ -18,8 +18,8 @@ var QuestsContainer = React.createClass({
 	      	self.setState({quests: snapshot.val()})
 	    });
 	},
-	updateAppState: function() {
-		this.props.updateAppState('new_quest');
+	updateAppState: function(__newState) {
+		this.props.updateAppState(__newState);
 	},
 	updateQuest: function(quest) {
 		this.props.updateQuest(quest);
@@ -41,11 +41,17 @@ var QuestsContainer = React.createClass({
 			<div className="header">
 				<div className="ml3 pt3 textWhite text2">taskr.</div>
 			</div>
-			<div className="ml3 mt3 textMagenta text1-2">My Quests</div>
+			<div className="ml3 mt2 textBlue text-l"><span className="p" onClick={this.updateAppState.bind(null, "home")}>Home</span> &nbsp;&nbsp;&gt;&nbsp;&nbsp; Quests</div>
 			<hr className="mt1 ml3 mr3" />
-			<div className="mt3 flex-col c">
+			<div className="flex-row ml3">
+				<div className="bgMagenta p-0-25 sizeIcon mt0-5 br-0-25">
+					<img className="sizeIcon" src="www/assets/new_custom88.svg" />
+				</div>
+				<div className="ml1 mt1 textMagenta text-l">My Quests</div>
+			</div>
+			<div className="mt3 flex-col c mb3">
 	    		{questList}
-	    		<div className="buttonLarge bgGreen textWhite mt3" onClick={this.updateAppState}>New Quest</div>
+	    		<div className="buttonLarge bgGreen textWhite mt1" onClick={this.updateAppState.bind(null, "new_quest")}>New Quest</div>
 	  		</div>
 	  	</div>
 	}

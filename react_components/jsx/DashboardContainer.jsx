@@ -48,9 +48,9 @@ var DashboardContainer = React.createClass({
 			<div className="header">
 				<div className="ml3 pt3 textWhite text2">taskr.</div>
 			</div>
-			<div className="ml3 mt3 textBlue text1-2">Welcome, {this.props.user.firstName}</div>
+			<div className="ml3 mt2 textBlue text1-2">Welcome, {this.props.user.firstName}</div>
 			<hr className="mt1 ml3 mr3" />
-			<div className="mt3 flex-col c">
+			<div className="mt3 flex-col c mb3">
 	    		<div className="buttonLarge bgBlue textWhite" onClick={this.manageQuests}>Manage Quests</div>
 	    		<div className="buttonLarge bgGreen textWhite mt2" onClick={this.manageStudents}>Manage Students</div>
 	  		</div>
