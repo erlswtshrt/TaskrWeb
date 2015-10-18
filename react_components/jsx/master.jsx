@@ -8,6 +8,7 @@ var QuestsContainer = require('./QuestsContainer');
 var TasksContainer = require('./TasksContainer');
 var StudentsContainer = require('./StudentsContainer');
 var NewStudentContainer = require('./NewStudentContainer');
+var StudentInformationContainer = require('./StudentInformationContainer');
 
 var MasterContainer = React.createClass({
 	updateAppState: function(__state) {
@@ -21,13 +22,15 @@ var MasterContainer = React.createClass({
 		this.setState({ appState: 'tasks',
 						questId: __id });
 	},
-	viewStudent: function() {
-		return false;
+	viewStudent: function(__id) {
+		this.setState( { 	appState: 'student_info',
+						 	studentId: __id } );
 	},
 	getInitialState: function() {
 		return {	user: null,
 					appState: 'home',
-					questId: null	};
+					questId: null,
+					studentId: null	};
 	},
 	setUser: function(__uid) {
 		var self = this;
@@ -52,25 +55,28 @@ var MasterContainer = React.createClass({
 		        return <LoginContainer setUser={this.setUser} updateAppState={this.updateAppState} />
 		        break;
 		    case 'register':
-		        return <RegisterContainer />
+		        return <RegisterContainer updateAppState={this.updateAppState} />
 		        break;
 		    case 'new_quest':
-		        return <NewQuestContainer uid={this.state.uid} updateQuest={this.updateQuest}/>
+		        return <NewQuestContainer updateQuest={this.updateQuest} updateAppState={this.updateAppState}/>
 		        break;
 		    case 'new_task':
-		        return <NewTaskContainer uid={this.state.uid} questId={this.state.questId} updateAppState={this.updateAppState}/>
+		        return <NewTaskContainer questId={this.state.questId} updateAppState={this.updateAppState}/>
 		        break;
 		    case 'tasks':
-		    	return <TasksContainer uid={this.state.uid} questId={this.state.questId} addTaskToQuest={this.addTaskToQuest} updateAppState={this.updateAppState} />
+		    	return <TasksContainer questId={this.state.questId} addTaskToQuest={this.addTaskToQuest} updateAppState={this.updateAppState} />
 		    	break;
 		   	case 'quests':
-		        return <QuestsContainer uid={this.state.uid} questId={this.state.questId} updateQuest={this.updateQuest} updateAppState={this.updateAppState}/>
+		        return <QuestsContainer questId={this.state.questId} updateQuest={this.updateQuest} updateAppState={this.updateAppState}/>
 		        break;
 		    case 'students':
-		        return <StudentsContainer uid={this.state.uid} studentId={this.state.studentId} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
+		        return <StudentsContainer studentId={this.state.studentId} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
 		        break;
 		   	case 'new_student':
-		        return <NewStudentContainer uid={this.state.uid} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
+		        return <NewStudentContainer viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
+		        break;
+		    case 'student_info':
+		        return <StudentInformationContainer studentId={this.state.studentId} viewStudent={this.viewStudent} updateAppState={this.updateAppState}/>
 		        break;
 		    default:
 		        return <div>rendering error</div>

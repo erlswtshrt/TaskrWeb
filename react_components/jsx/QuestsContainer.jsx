@@ -1,15 +1,21 @@
 var React = require('react/addons');
 var NewTaskContainer = require('./NewTaskContainer');
 
+var ref = new Firebase("https://taskrweb.firebaseio.com/");
+var authData = null;
+
+var uid = null;
+
 var QuestsContainer = React.createClass({
 	getInitialState: function() {
 		return {	quests: {}	};
 	},
 	componentDidMount: function() {
-		var ref = new Firebase("https://taskrweb.firebaseio.com");
+		authData = ref.getAuth();
+    	if(authData !== null) uid = authData.uid;
 
 		var usersRef = ref.child("users");
-	    var userRef = usersRef.child(this.props.uid);
+	    var userRef = usersRef.child(uid);
 	    var questsRef = userRef.child('quests');
 
 	    var self = this;
@@ -32,7 +38,7 @@ var QuestsContainer = React.createClass({
 
 		for (var quest in this.state.quests) {
 		   if (this.state.quests.hasOwnProperty(quest)) {
-		       questList.push(<div className="buttonLarge bgMagenta textWhite" onClick={this.updateQuest.bind(null, quest)}>{this.state.quests[quest].name}</div>);
+		       questList.push(<div className="buttonLarge bgBlue textWhite" onClick={this.updateQuest.bind(null, quest)}>{this.state.quests[quest].name}</div>);
 		    }
 		}
 
@@ -41,15 +47,16 @@ var QuestsContainer = React.createClass({
 			<div className="header">
 				<div className="ml3 pt3 textWhite text2">taskr.</div>
 			</div>
-			<div className="ml3 mt2 textBlue text-l"><span className="p" onClick={this.updateAppState.bind(null, "home")}>Home</span> &nbsp;&nbsp;&gt;&nbsp;&nbsp; Quests</div>
+			<div className="ml3 mt2 textBlue text-l"><span className="p navLink" onClick={this.updateAppState.bind(null, "home")}>Home</span> &nbsp;&nbsp;&gt;&nbsp;&nbsp; Quests</div>
 			<hr className="mt1 ml3 mr3" />
 			<div className="flex-row ml3">
-				<div className="bgMagenta p-0-25 sizeIcon mt0-5 br-0-25">
-					<img className="sizeIcon" src="www/assets/new_custom88.svg" />
+				<div className="bgBlue p-0-25 sizeIcon mt0-5 br-0-25">
+					<img className="sizeIcon" src="www/assets/quest.svg" />
 				</div>
-				<div className="ml1 mt1 textMagenta text-l">My Quests</div>
+				<div className="ml1 mt1 textBlue text-l">My Quests</div>
 			</div>
-			<div className="mt3 flex-col c mb3">
+			<hr className="mt1 ml3 mr3" />
+			<div className="mt2 flex-col c mb3">
 	    		{questList}
 	    		<div className="buttonLarge bgGreen textWhite mt1" onClick={this.updateAppState.bind(null, "new_quest")}>New Quest</div>
 	  		</div>

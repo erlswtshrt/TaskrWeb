@@ -3,7 +3,19 @@ var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
 var QRCode = require('qrcode.react');
 
+var ref = new Firebase("https://taskrweb.firebaseio.com/");
+var authData = null;
+
+var uid = null;
+
 var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
+  updateAppState: function(__newState) {
+    this.props.updateAppState(__newState);
+  },
+  componentDidMount: function() {
+    authData = ref.getAuth();
+    if(authData !== null) uid = authData.uid;
+  },
   getInitialState: function() {
     return { taskId: null }
   },
@@ -27,7 +39,7 @@ var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
     console.log(this.props.questId)
 
     var usersRef = ref.child("users");
-    var userRef = usersRef.child(this.props.uid);
+    var userRef = usersRef.child(uid);
     var questsRef = userRef.child("quests");
     var questRef = questsRef.child(this.props.questId);
     var tasksRef = questRef.child("tasks")
@@ -41,15 +53,17 @@ var NewTaskContainer = React.createClass({displayName: "NewTaskContainer",
   },
   render: function() {
     return (
-      React.createElement("div", {className: "flex-col c bgPurple h-full"}, 
-        React.createElement("form", {className: "flex-col"}, 
+      React.createElement("div", {className: "flex-col c login-bg h-full"}, 
+        React.createElement("div", {className: "textWhite text1-2"}, "Register a new student."), 
+        React.createElement("form", {className: "flex-col c mt2"}, 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "question", placeholder: "Question", ref: "question"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option1", placeholder: "Option 1", ref: "option1"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option2", placeholder: "Option 2", ref: "option2"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option3", placeholder: "Option 3", ref: "option3"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", name: "option4", placeholder: "Option 4", ref: "option4"})
         ), 
-        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addTask}, "Add Task")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite", onClick: this.addTask}, "Add Task"), 
+        React.createElement("div", {className: "buttonLarge bgRed textWhite mb3", onClick: this.updateAppState.bind(null, "tasks")}, "Cancel")
       )
     );
   }

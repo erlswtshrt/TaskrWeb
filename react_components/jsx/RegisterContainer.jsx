@@ -2,7 +2,19 @@ var React = require('react');
 var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
 
+var ref = new Firebase("https://taskrweb.firebaseio.com/");
+var authData = null;
+
+var uid = null;
+
 var RegisterContainer = React.createClass({
+  updateAppState: function(__newState) {
+    this.props.updateAppState(__newState);
+  },
+  componentDidMount: function() {
+    authData = ref.getAuth();
+    if(authData !== null) uid = authData.uid;
+  },
   getInitialState: function() {
     return { productId: null }
   },
@@ -27,19 +39,22 @@ var RegisterContainer = React.createClass({
           lastName: lastName,
           email: email
         });
+        this.updateAppState.bind(null, "login");
       }
     });
   },
   render: function() {
     return (
-      <div className="flex-col c bgDarkBlue h-full mb3">
-        <form className="flex-col">
+      <div className="flex-col c login-bg h-full mb3">
+        <div className="textWhite text1-2">Get onboard!</div>
+        <form className="flex-col mt2 c">
           <input className="textInputLarge" type="text" name="firstName" placeholder="First Name" ref="firstName" />
           <input className="textInputLarge" type="text" name="lastName" placeholder="Last Name" ref="lastName" />
           <input className="textInputLarge" type="text" name="email" placeholder="Email" ref="email" />
           <input className="textInputLarge" type="password" name="password" placeholder="Password" ref="password" />
         </form>
-        <div className="buttonLarge bgYellow" onClick={this.register}>Register</div>
+        <div className="buttonLarge bgGreen textWhite" onClick={this.register}>Submit</div>
+        <div className="buttonLarge bgRed textWhite mb3" onClick={this.updateAppState.bind(null, "login")}>Cancel</div>
       </div>
     );
   }

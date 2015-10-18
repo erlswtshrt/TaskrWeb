@@ -1,15 +1,21 @@
 var React = require('react/addons');
 var NewTaskContainer = require('./NewTaskContainer');
 
+var ref = new Firebase("https://taskrweb.firebaseio.com/");
+var authData = null;
+
+var uid = null;
+
 var StudentsContainer = React.createClass({
 	getInitialState: function() {
 		return {	students: {}	};
 	},
 	componentDidMount: function() {
-		var ref = new Firebase("https://taskrweb.firebaseio.com");
+    	authData = ref.getAuth();
+    	if(authData !== null) uid = authData.uid;
 
 		var usersRef = ref.child("users");
-	    var userRef = usersRef.child(this.props.uid);
+	    var userRef = usersRef.child(uid);
 	    var studentsRef = userRef.child('students');
 
 	    var self = this;
@@ -41,15 +47,16 @@ var StudentsContainer = React.createClass({
 			<div className="header">
 				<div className="ml3 pt3 textWhite text2">taskr.</div>
 			</div>
-			<div className="ml3 mt2 textBlue text-l"><span className="p" onClick={this.updateAppState.bind(null, "home")}>Home</span> &nbsp;&nbsp;&gt;&nbsp;&nbsp; Students</div>
+			<div className="ml3 mt2 textBlue text-l"><span className="p navLink" onClick={this.updateAppState.bind(null, "home")}>Home</span> &nbsp;&nbsp;&gt;&nbsp;&nbsp; Students</div>
 			<hr className="mt1 ml3 mr3" />
 			<div className="flex-row ml3">
 				<div className="bgPurple p-0-25 sizeIcon mt0-5 br-0-25">
-					<img className="sizeIcon" src="www/assets/new_custom88.svg" />
+					<img className="sizeIcon" src="www/assets/students.svg" />
 				</div>
 				<div className="ml1 mt1 textPurple text-l">My Students</div>
 			</div>
-			<div className="mt3 flex-col c mb3">
+			<hr className="mt1 ml3 mr3" />
+			<div className="mt2 flex-col c mb3">
 	    		{studentList}
 	    		<div className="buttonLarge bgGreen textWhite mt1" onClick={this.updateAppState.bind(null, "new_student")}>New student</div>
 	  		</div>

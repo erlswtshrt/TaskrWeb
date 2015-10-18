@@ -1,11 +1,10 @@
 @font-face {
   font-family: 'Avenir';
-  font-style: light;
-  font-weight: light;
-  src: url("../assets/Fonts/AvenirLTStd-Medium.woff") format("woff"); }
+  src: url("../assets/Fonts/ProximaNova/ProximaNovaSoft/webFonts/proximanovasoft-regular.woff") format("woff"); }
 
 body {
-  font-family: 'Avenir'; }
+  font-family: 'Avenir';
+  font-size: 1rem; }
 
 hr {
   display: block;
@@ -13,6 +12,14 @@ hr {
   border: 0;
   border-top: 1px solid #ccc;
   padding: 0; }
+
+.navLink {
+  color: #059ece;
+  transition: 0.1s; }
+
+.navLink:hover {
+  color: #333;
+  transition: 0.1s; }
 
 .text-l {
   font-weight: light; }
@@ -23,8 +30,14 @@ hr {
 .textWhite {
   color: #ffffff; }
 
+.textDarkBlue {
+  color: #4b74b5; }
+
 .textGreen {
   color: #42c697; }
+
+.textRed {
+  color: #ef6c6c; }
 
 .textBlue {
   color: #059ece; }
@@ -125,7 +138,13 @@ hr {
 .h50 {
   height: 50rem; }
 
+.textInputLarge:focus {
+  width: 22rem;
+  transition: 0.1s;
+  opacity: 1; }
+
 .textInputLarge {
+  opacity: 0.85;
   width: 20rem;
   border-radius: 0.25rem;
   background-color: #ffffff;
@@ -135,9 +154,16 @@ hr {
   padding-right: 0.5rem;
   padding: 0.7rem;
   border: none;
-  font-weight: light !important; }
+  font-weight: light !important;
+  transition: 0.1s; }
+
+.buttonLarge:hover {
+  opacity: 1;
+  width: 22rem;
+  transition: 0.05s; }
 
 .buttonLarge {
+  opacity: 0.85;
   width: 20rem;
   border-radius: 0.25rem;
   padding-top: 0.7rem;
@@ -147,7 +173,8 @@ hr {
   border: none;
   text-align: center;
   cursor: pointer;
-  font-weight: light !important; }
+  font-weight: light !important;
+  transition: 0.1s; }
 
 *:focus {
   outline: 0; }
@@ -158,6 +185,10 @@ input {
 body {
   margin: 0 !important;
   padding: 0 !important; }
+
+.spinner {
+  height: 3rem;
+  width: 3rem; }
 
 .flex-col {
   display: -webkit-flex;
@@ -174,9 +205,148 @@ body {
 .h-full {
   height: 100%; }
 
+.sk-circle {
+  margin: 100px auto;
+  width: 60px;
+  height: 60px;
+  position: relative; }
+
+.sk-circle .sk-child {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0; }
+
+.sk-circle .sk-child:before {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  width: 15%;
+  height: 15%;
+  background-color: #fff;
+  border-radius: 100%;
+  -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
+  animation: sk-circleBounceDelay 1.2s infinite ease-in-out both; }
+
+.sk-circle .sk-circle2 {
+  -webkit-transform: rotate(30deg);
+  -ms-transform: rotate(30deg);
+  transform: rotate(30deg); }
+
+.sk-circle .sk-circle3 {
+  -webkit-transform: rotate(60deg);
+  -ms-transform: rotate(60deg);
+  transform: rotate(60deg); }
+
+.sk-circle .sk-circle4 {
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg); }
+
+.sk-circle .sk-circle5 {
+  -webkit-transform: rotate(120deg);
+  -ms-transform: rotate(120deg);
+  transform: rotate(120deg); }
+
+.sk-circle .sk-circle6 {
+  -webkit-transform: rotate(150deg);
+  -ms-transform: rotate(150deg);
+  transform: rotate(150deg); }
+
+.sk-circle .sk-circle7 {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg); }
+
+.sk-circle .sk-circle8 {
+  -webkit-transform: rotate(210deg);
+  -ms-transform: rotate(210deg);
+  transform: rotate(210deg); }
+
+.sk-circle .sk-circle9 {
+  -webkit-transform: rotate(240deg);
+  -ms-transform: rotate(240deg);
+  transform: rotate(240deg); }
+
+.sk-circle .sk-circle10 {
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg); }
+
+.sk-circle .sk-circle11 {
+  -webkit-transform: rotate(300deg);
+  -ms-transform: rotate(300deg);
+  transform: rotate(300deg); }
+
+.sk-circle .sk-circle12 {
+  -webkit-transform: rotate(330deg);
+  -ms-transform: rotate(330deg);
+  transform: rotate(330deg); }
+
+.sk-circle .sk-circle2:before {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s; }
+
+.sk-circle .sk-circle3:before {
+  -webkit-animation-delay: -1s;
+  animation-delay: -1s; }
+
+.sk-circle .sk-circle4:before {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s; }
+
+.sk-circle .sk-circle5:before {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s; }
+
+.sk-circle .sk-circle6:before {
+  -webkit-animation-delay: -0.7s;
+  animation-delay: -0.7s; }
+
+.sk-circle .sk-circle7:before {
+  -webkit-animation-delay: -0.6s;
+  animation-delay: -0.6s; }
+
+.sk-circle .sk-circle8:before {
+  -webkit-animation-delay: -0.5s;
+  animation-delay: -0.5s; }
+
+.sk-circle .sk-circle9:before {
+  -webkit-animation-delay: -0.4s;
+  animation-delay: -0.4s; }
+
+.sk-circle .sk-circle10:before {
+  -webkit-animation-delay: -0.3s;
+  animation-delay: -0.3s; }
+
+.sk-circle .sk-circle11:before {
+  -webkit-animation-delay: -0.2s;
+  animation-delay: -0.2s; }
+
+.sk-circle .sk-circle12:before {
+  -webkit-animation-delay: -0.1s;
+  animation-delay: -0.1s; }
+
+@-webkit-keyframes sk-circleBounceDelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1); } }
+
+@keyframes sk-circleBounceDelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1); } }
+
 .login-bg {
   height: 100%;
-  background-image: linear-gradient(#059ece, rgba(5, 158, 206, 0.6)), url("../assets/classroom1.jpg");
+  background-image: linear-gradient(#4b74b5, rgba(75, 116, 181, 0.6)), url("../assets/classroom1.jpg");
   background-size: cover;
   background-position: 0rem 0rem; }
 
@@ -200,8 +370,8 @@ body {
   border-right-width: 0.1rem;
   border-right-style: solid;
   border-right-color: #ccc;
-  border-bottom-left-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem; }
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem; }
 
 .br-0-25 {
   border-radius: 0.25rem; }
@@ -226,10 +396,17 @@ body {
 .floatRight {
   float: right; }
 
+.student-header {
+  width: 100%;
+  height: 25rem;
+  background-image: linear-gradient(#4b74b5, rgba(75, 116, 181, 0.7)), url("../assets/classroom.jpg");
+  background-size: cover;
+  background-position: 0rem 0rem; }
+
 .header {
   width: 100%;
-  height: 20rem;
-  background-image: linear-gradient(rgba(5, 158, 206, 0.9), rgba(5, 158, 206, 0.45)), url("../assets/classroom.jpg");
+  height: 23rem;
+  background-image: linear-gradient(rgba(75, 116, 181, 0.9), rgba(75, 116, 181, 0.45)), url("../assets/classroom.jpg");
   background-size: cover;
   background-position: 0rem 0rem; }
 

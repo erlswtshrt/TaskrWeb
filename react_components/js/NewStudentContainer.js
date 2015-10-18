@@ -3,7 +3,19 @@ var ReactFireMixin = require('reactfire');
 var Firebase = require('firebase');
 var QRCode = require('qrcode.react');
 
+var ref = new Firebase("https://taskrweb.firebaseio.com/");
+var authData = null;
+
+var uid = null;
+
 var NewStudentContainer = React.createClass({displayName: "NewStudentContainer",
+  updateAppState: function(__newState) {
+    this.props.updateAppState(__newState);
+  },
+  componentDidMount: function() {
+    authData = ref.getAuth();
+    if(authData !== null) uid = authData.uid;
+  },
   createStudentId: function(__student) {
     __student = __student.replace(/\s+/g, '');
     return __student;
@@ -19,7 +31,7 @@ var NewStudentContainer = React.createClass({displayName: "NewStudentContainer",
     var age = React.findDOMNode(this.refs.age).value.trim();
 
     var usersRef = ref.child("users");
-    var userRef = usersRef.child(this.props.uid);
+    var userRef = usersRef.child(uid);
     var studentsRef = userRef.child("students");
     studentsRef.child(id).set({ 
       firstName: firstName,
@@ -29,13 +41,15 @@ var NewStudentContainer = React.createClass({displayName: "NewStudentContainer",
   },
   render: function() {
     return (
-      React.createElement("div", {className: "flex-col c bgRed h-full"}, 
-        React.createElement("form", {className: "flex-col"}, 
+      React.createElement("div", {className: "flex-col c login-bg h-full"}, 
+        React.createElement("div", {className: "textWhite text1-2"}, "Register a new student."), 
+        React.createElement("form", {className: "flex-col c mt2"}, 
           React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "First name", ref: "firstName"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "Last name", ref: "lastName"}), 
           React.createElement("input", {className: "textInputLarge", type: "text", placeholder: "Age", ref: "age"})
         ), 
-        React.createElement("div", {className: "buttonLarge bgGreen textWhite mb3", onClick: this.addQuest}, "Register Student")
+        React.createElement("div", {className: "buttonLarge bgGreen textWhite", onClick: this.addQuest}, "Register Student"), 
+        React.createElement("div", {className: "buttonLarge bgRed textWhite mb3", onClick: this.updateAppState.bind(null, "students")}, "Cancel")
       )
     );
   }
